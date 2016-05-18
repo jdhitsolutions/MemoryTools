@@ -23,10 +23,10 @@ Process {
 foreach ($computer in $computername) {
     Write-Verbose "Processing $computer"
     Try {
-        $os = Get-CimInstance Win32_OperatingSystem -ComputerName $Computer -ErrorAction stop
+        $os = Get-CimInstance -classname Win32_OperatingSystem -ComputerName $Computer -ErrorAction stop
     }
     Catch {
-        Write-Warning "[$($Computer.toUpper())] $($_.exception.message)"
+        Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
     }
     if ($os) {
         $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)

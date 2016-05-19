@@ -2,7 +2,7 @@
 
 #TO-DO
 #create help
-#create format xml
+#add function to get physical memory information
 
 #region Define functions
 

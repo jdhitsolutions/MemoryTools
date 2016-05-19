@@ -1,4 +1,5 @@
 
+#Show-MemoryUsage can't be tested because it doesn't write anything to the pipeline
 
 Import-Module ..\MemoryTools
 
@@ -16,19 +17,22 @@ Describe "MemoryTools Module" {
 Describe "Get-MemoryUsage" -Tags "Get" {
     Mock Get-CimInstance {
            $data = [pscustomobject]@{
-           PSComputername = $env:computername
+           PSComputername = "WinTest"
            FreePhysicalMemory = 4194304
            TotalVisibleMemorySize = 8298776
           }
           Return $Data
-        } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq $env:computername}
+        } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq "WinTest"}
         
-    $try = Get-MemoryUsage
+    $try = Get-MemoryUsage -computername WinTest
+    It "should run with defaults and without error" {
+        {Get-MemoryUsage -ErrorAction stop } | Should not Throw
+    }
     It "Should show status as OK" {
         $try.status | Should be "OK"
     }
-    It "Should show computername as localhost [$env:computername]" {
-        $try.computername | should be $env:computername
+    It "Should show computername as WinTest" {
+        $try.computername | should be "WinTest"
     }
     It "Should show total as 8" {
         $try.TotalGB | Should be 8
@@ -44,10 +48,27 @@ Describe "Get-MemoryUsage" -Tags "Get" {
     }
     It "Should accept pipelined input" {
      { "localhost" | Get-MemoryUsage -ErrorAction stop } | Should Not Throw
+    
+     ("localhost","localhost","localhost" | Get-MemoryUsage | measure-object).count | Should be 3
+      
     }
     It "Should error with a bad computername" {
         { Get-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw
     }
     } #Get-MemoryUsage
+
+Describe "Test-MemoryUsage" -Tags Test {
+    It "Should run with defaults and without error" {
+        {Test-MemoryUsage -ErrorAction Stop} | Should Not Throw
+    }
+    
+
+} #Test-MemoryUsage
+
+Describe "Get-MemoryPerformance" {
+    It "Should run with defaults and without error" {
+        {Get-MemoryPerformance -ErrorAction Stop} | Should Not Throw
+    }
+} #Get-MemoryPerformance
 
 } #in module

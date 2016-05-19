@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <ViewDefinitions>
+     <View>
+         <Name>MyMemoryUsageTable</Name>
+         <ViewSelectedBy><TypeName>MyMemoryUsage</TypeName></ViewSelectedBy>
+         <TableControl>
+             <TableHeaders>
+                 <TableColumnHeader><Label>Computername</Label></TableColumnHeader>
+                 <TableColumnHeader><Label>Status</Label></TableColumnHeader>
+                 <TableColumnHeader>
+                    <Label>PctFree</Label>
+                    <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                 <TableColumnHeader>
+                    <Label>FreeGB</Label>
+                    <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                 <TableColumnHeader>
+                    <Label>TotalGB</Label>
+                    <Alignment>Right</Alignment>
+                 </TableColumnHeader>
+             </TableHeaders>
+             <TableRowEntries>
+             <TableRowEntry>
+                 <TableColumnItems>
+                     <TableColumnItem><PropertyName>Computername</PropertyName></TableColumnItem>
+                     <TableColumnItem><PropertyName>Status</PropertyName></TableColumnItem>
+                     <TableColumnItem><PropertyName>PctFree</PropertyName></TableColumnItem>
+                     <TableColumnItem><PropertyName>FreeGB</PropertyName></TableColumnItem>
+                     <TableColumnItem><PropertyName>TotalGB</PropertyName></TableColumnItem>
+                     </TableColumnItems>
+                 </TableRowEntry>
+                 </TableRowEntries>
+         </TableControl>
+     </View>
+</ViewDefinitions>
+</Configuration>

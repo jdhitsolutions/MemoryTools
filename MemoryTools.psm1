@@ -1,9 +1,5 @@
 #requires -version 4.0
 
-#TO-DO
-#create help
-#add function to get physical memory information
-
 #region Define functions
 
 Function Get-MemoryUsage {

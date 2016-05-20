@@ -32,6 +32,13 @@ Describe "MemoryTools Functions" -Tags Functions  {
         Return $Data
     } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq "WinTest"}
 
+    #test with a piped in object
+    $computerObject = New-object -typename PSObject -property @{
+      Computername = $env:computername
+      Location = "Chicago"
+      OS = "Windows Server 2012 R2"
+    }
+
     $try = Get-MemoryUsage -computername WinTest
     Context "Get-MemoryUsage " {
     It "should run with defaults and without error" {
@@ -58,8 +65,14 @@ Describe "MemoryTools Functions" -Tags Functions  {
     It "Should accept pipelined input" {
         { "localhost" | Get-MemoryUsage -ErrorAction stop } | Should Not Throw
     
-        ("localhost","localhost","localhost" | Get-MemoryUsage | measure-object).count | Should be 3
+        ("localhost","localhost","localhost" | Get-MemoryUsage | Measure-Object).count | Should be 3
+
+        ($computerobject,$computerobject | Get-MemoryUsage | Measure-Object).count | Should be 2
       
+    }
+
+    It "Should accept an object with Computername property" {
+       (Get-MemoryUsage -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
     }
     It "Should error with a bad computername" {
         { Get-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw
@@ -84,7 +97,13 @@ Describe "MemoryTools Functions" -Tags Functions  {
     
             ("localhost","localhost","localhost" | Test-MemoryUsage -quiet | measure-object).count | Should be 3
       
-            }
+            ($computerobject,$computerobject | Test-MemoryUsage | Measure-Object).count | Should be 2
+      
+        }
+
+       It "Should accept an object with Computername property" {
+        ( Test-MemoryUsage -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
+       }
            It "Should error with a bad computername" {
             { Test-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw
         }      
@@ -148,15 +167,19 @@ Describe "MemoryTools Functions" -Tags Functions  {
         }
 
         It "Should accept pipelined input" {
-        { "localhost" | Get-MemoryPerformance -ErrorAction stop } | Should Not Throw
-    
-        ("localhost","localhost","localhost" | Get-MemoryPerformance | measure-object).count | Should be 3
-      
+            { "localhost" | Get-MemoryPerformance -ErrorAction stop } | Should Not Throw
+            ("localhost","localhost","localhost" | Get-MemoryPerformance | measure-object).count | Should be 3
+            ($computerobject,$computerobject | Get-MemoryPerformance | Measure-Object).count | Should be 2
+        }
+
+        It "Should accept an object with Computername property" {
+            (Get-MemoryPerformance -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
         }
        It "Should error with a bad computername" {
         { Get-MemoryPerformance -Computername 'F00' -ErrorAction stop } | Should Throw
     }
     } #Get-MemoryPerformance
+
     Context "Get-PhysicalMemory" {
         Mock Get-CimInstance {
             $data = @(
@@ -205,11 +228,19 @@ Describe "MemoryTools Functions" -Tags Functions  {
             $r[0].ClockSpeed | Should Be 2133
         }
      
+        #change the computername to use the mocked command
+        $Computerobject.Computername = "WinTest"
+        
         It "Should accept pipelined input" {
-        { "localhost" | Get-PhysicalMemory -ErrorAction stop } | Should Not Throw
+            { "localhost" | Get-PhysicalMemory -ErrorAction stop } | Should Not Throw
     
-        ("WinTest","WinTest","WinTest" | Get-PhysicalMemory | measure-object).count | Should be 6
-      
+            ("WinTest","WinTest","WinTest" | Get-PhysicalMemory | measure-object).count | Should be 6
+            
+            ($computerobject,$computerobject | Get-PhysicalMemory | Measure-Object).count | Should be 4
+        }
+
+        It "Should accept an object with Computername property" {
+            (Get-PhysicalMemory -computername $computerobject,$computerobject | Measure-Object).count | Should be 4
         }
        It "Should error with a bad computername" {
         { Get-PhysicalMemory -Computername 'F00' -ErrorAction stop } | Should Throw

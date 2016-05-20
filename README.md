@@ -16,20 +16,7 @@ that indicates the current memory state.
 This command will also get the same information as Get-MemoryUsage but will
 display it with colorized output.
 
-    ****************
-    * Memory Check *
-    ****************
-
-    Computername Status  PctFree FreeGB TotalGB
-    ------------ ------  ------- ------ -------
-    CHI-HVR1     OK        91.22  14.51      16
-    CHI-HVR2     OK        80.86  12.84      16
-    CHI-P50      OK        71.58  45.71      64
-    CHI-DC04     Warning    26.3   1.05       4
-    WIN81-ENT-01 Warning   19.34   1.53       8
-
-Computers with a Status of OK will be Green, Warning will be Yellow and
-Critical will be in Red.
+![Alt text](http://jdhitsolutions.com/blog/wp-content/uploads/2016/05/show-memoryusage.png "Show-MemoryUsage")
 
 ## Test-MemoryUsage ##
 This command can be used to test if memory utilization meets some criteria.

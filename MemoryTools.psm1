@@ -262,7 +262,7 @@ Process {
             }
         } #try
         Catch {
-            Write-Warning "[$($Computer.toUpper())] $($_.exception.message)"
+            Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
         }
     } #foreach
 } #process
@@ -272,6 +272,68 @@ End {
 
 } #end Test-MemoryUsage
 
+Function Get-PhysicalMemory {
+
+[cmdletbinding()]
+Param(
+[Parameter(Position = 0,ValueFromPipeline)]
+[ValidateNotNullorEmpty()]
+[Alias("cn")]
+[string[]]$Computername = $env:Computername
+)
+
+Begin {
+    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    #define a hash table to resolve Form factor
+    $form = @{
+    0 = 'Unknown'
+    1 = 'Other'
+    2 = 'SIP'
+    3 = 'DIP'
+    4 = 'ZIP'
+    5 = 'SOJ'
+    6 = 'Proprietary'
+    7 = 'SIMM'
+    8 = 'DIMM'
+    9 = 'TSOP'
+    10 ='PGA'
+    11 = 'RIMM'
+    12 = 'SODIMM'
+    13 = 'SRIMM'
+    14 = 'SMD'
+    15 = 'SSMP'
+    16 = 'QFP'
+    17 = 'TQFP'
+    18 = 'SOIC'
+    19 = 'LCC'
+    20 = 'PLCC'
+    21 = 'BGA'
+    22 = 'FPBGA'
+    23 = 'LGA'
+    }
+} #begin
+
+Process {
+    Foreach ($computer in $computername) {
+        Try {
+        Get-CimInstance win32_physicalmemory -computername $computer | 
+        Select @{Name="Computername";Expression={$_.PSComputername.ToUpper()}},
+        Manufacturer,@{Name="CapacityGB";Expression={$_.Capacity/1GB}},
+        @{Name="Form";Expression={$form.item($_.FormFactor -as [int])}},
+        @{Name="ClockSpeed";Expression={$_.ConfiguredClockSpeed}},
+        @{Name="Voltage";Expression={$_.ConfiguredVoltage}},DeviceLocator 
+        } #Try
+        Catch {
+         Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
+        }
+    } #foreach
+} #process
+
+End {
+    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+} #end
+
+} #get-PhysicalMemory
 #endregion
 
 #define some aliases
@@ -279,3 +341,4 @@ Set-Alias -Name shmem -Value Show-MemoryUsage
 Set-Alias -Name gmem -Value Get-MemoryUsage
 Set-Alias -Name gmemp -Value Get-MemoryPerformance
 Set-Alias -Name tmem -Value Test-MemoryUsage
+Set-Alias -Name gpmem -Value Get-Physicalmemory

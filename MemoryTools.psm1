@@ -105,7 +105,8 @@ Begin {
 
 Write-Host $title -foregroundColor Cyan
 
-    
+    #initialize an array to hold data
+    $data = @()
 } #begin
 
 Process {
@@ -119,8 +120,14 @@ foreach ($item in $computername) {
         $computer = $item
     }
 
-    #get memory usage data
-    $data = Get-MemoryUsage -Computername $computer
+    #get memory usage data for each computer
+    $data += Get-MemoryUsage -Computername $computer
+    
+ } #foreach
+} #Process
+
+End {
+    #write results to the host
     #create a text table and split into an array based on each line
     $strings = ($data | Format-Table | Out-String).Trim().split("`n")
     #display the first two lines which should be the header
@@ -136,10 +143,6 @@ foreach ($item in $computername) {
         #write the line with the corresponding alert color
         Write-Host $_ -ForegroundColor $color
    } #foreach string
- } #foreach
-} #Process
-
-End {
     #write an extra blank line 
     write-Host "`n"
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"

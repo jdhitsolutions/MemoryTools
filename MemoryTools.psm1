@@ -5,18 +5,32 @@
 Function Get-MemoryUsage {
 [cmdletbinding()]
 Param(
-[Parameter(Position = 0,ValueFromPipeline)]
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName
+ )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[string[]]$Computername = $env:Computername
+[object[]]$Computername = $env:Computername
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
 Process {
-foreach ($computer in $computername) {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
     Write-Verbose "Processing $computer"
     Try {
         $os = Get-CimInstance -classname Win32_OperatingSystem -ComputerName $Computer -ErrorAction stop
@@ -65,7 +79,11 @@ Function Show-MemoryUsage {
 
 [cmdletbinding()]
 Param(
-[Parameter(Position = 0,ValueFromPipeline)]
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName
+ )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
 [string[]]$Computername = $env:Computername
@@ -120,7 +138,11 @@ Function Get-MemoryPerformance {
 
 [cmdletbinding()]
 Param(
-[Parameter(Position = 0,ValueFromPipeline)]
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName
+ )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
 [string[]]$Computername = $env:Computername
@@ -178,7 +200,11 @@ Function Test-MemoryUsage {
 #get-memory usage and test for a minimum %free, FreeGB, TotalGB or UsedGB
 [cmdletbinding(DefaultParameterSetName="Percent")]
 Param(
-[Parameter(Position = 0,ValueFromPipeline)]
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName
+ )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
 [string[]]$Computername = $env:Computername,
@@ -275,7 +301,11 @@ Function Get-PhysicalMemory {
 
 [cmdletbinding()]
 Param(
-[Parameter(Position = 0,ValueFromPipeline)]
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName
+ )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
 [string[]]$Computername = $env:Computername

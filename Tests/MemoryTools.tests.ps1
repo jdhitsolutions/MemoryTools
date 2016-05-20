@@ -32,6 +32,13 @@ Describe "MemoryTools Functions" -Tags Functions  {
         Return $Data
     } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq "WinTest"}
 
+    #test with a piped in object
+    $computerObject = New-object -typename PSObject -property @{
+      Computername = "WinTest"
+      Location = "Chicago"
+      OS = "Windows Server 2012 R2"
+    }
+
     $try = Get-MemoryUsage -computername WinTest
     Context "Get-MemoryUsage " {
     It "should run with defaults and without error" {
@@ -58,8 +65,14 @@ Describe "MemoryTools Functions" -Tags Functions  {
     It "Should accept pipelined input" {
         { "localhost" | Get-MemoryUsage -ErrorAction stop } | Should Not Throw
     
-        ("localhost","localhost","localhost" | Get-MemoryUsage | measure-object).count | Should be 3
+        ("localhost","localhost","localhost" | Get-MemoryUsage | Measure-Object).count | Should be 3
+
+        ($computerobject,$computerobject | Get-MemoryUsage | Measure-Object).count | Should be 2
       
+    }
+
+    It "Should accept an object with Computername property" {
+       (Get-MemoryUsage -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
     }
     It "Should error with a bad computername" {
         { Get-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw

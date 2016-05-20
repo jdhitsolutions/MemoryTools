@@ -75,6 +75,7 @@ Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
     #a formatted report title
     $title = @"
+
 ****************
 * Memory Check *
 ****************
@@ -108,6 +109,8 @@ Process {
 } #Process
 
 End {
+    #write an extra blank line 
+    write-Host "`n"
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"
 } #end
 

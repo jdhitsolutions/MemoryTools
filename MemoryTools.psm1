@@ -86,11 +86,14 @@ Param(
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[string[]]$Computername = $env:Computername
+[object[]]$Computername = $env:Computername
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
+
     #a formatted report title
     $title = @"
 
@@ -102,12 +105,22 @@ Begin {
 
 Write-Host $title -foregroundColor Cyan
 
+    
 } #begin
 
 Process {
-#foreach ($computer in $computername) {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
+
     #get memory usage data
-    $data = Get-MemoryUsage -Computername $computername
+    $data = Get-MemoryUsage -Computername $computer
     #create a text table and split into an array based on each line
     $strings = ($data | Format-Table | Out-String).Trim().split("`n")
     #display the first two lines which should be the header
@@ -122,8 +135,8 @@ Process {
         }
         #write the line with the corresponding alert color
         Write-Host $_ -ForegroundColor $color
-    } 
- #} #foreach
+   } #foreach string
+ } #foreach
 } #Process
 
 End {
@@ -132,7 +145,7 @@ End {
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"
 } #end
 
-} #end Show-MemUsage
+} #end Show-MemoryUsage
 
 Function Get-MemoryPerformance {
 
@@ -145,7 +158,7 @@ Param(
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[string[]]$Computername = $env:Computername
+[object[]]$Computername = $env:Computername
 )
 
 Begin {
@@ -155,10 +168,20 @@ Begin {
         client are the same as on the server. Sort by name.
     #>
     $all = (get-counter -ListSet Memory*).counter | Sort-Object
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
 Process {
-    foreach ($computer in $computername) {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
         Write-Verbose "Getting memory performance data from $Computer"
         Try {
             $data =  Get-Counter -Counter $all -computername $computer -ErrorAction Stop
@@ -207,7 +230,7 @@ Param(
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[string[]]$Computername = $env:Computername,
+[object[]]$Computername = $env:Computername,
 [Parameter(ParameterSetName="Percent")]
 [ValidateNotNullorEmpty()]
 [int]$PercentFree = 50,
@@ -232,9 +255,20 @@ Begin {
             "Free"  { Write-Verbose "Testing if Free GB is >= $FreeGB" }
             "Percent"  { Write-Verbose "Testing if Percent free is >= $PercentFree" }
             } #switch
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
+
 Process {
-    foreach ($computer in $computername) {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
         Write-Verbose "Processing $computer"
         Try {
             $mem = Get-MemoryUsage -Computername $computer -ErrorAction Stop
@@ -308,11 +342,14 @@ Param(
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[string[]]$Computername = $env:Computername
+[object[]]$Computername = $env:Computername
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
+    
     #define a hash table to resolve Form factor
     $form = @{
     0 = 'Unknown'
@@ -340,10 +377,19 @@ Begin {
     22 = 'FPBGA'
     23 = 'LGA'
     }
+
 } #begin
 
 Process {
-    Foreach ($computer in $computername) {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
         Try {
         Get-CimInstance win32_physicalmemory -computername $computer | 
         Select @{Name="Computername";Expression={$_.PSComputername.ToUpper()}},

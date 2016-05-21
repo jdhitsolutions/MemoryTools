@@ -16,7 +16,7 @@ that indicates the current memory state.
 This command will also get the same information as Get-MemoryUsage but will
 display it with colorized output.
 
-![Alt text](http://jdhitsolutions.com/blog/wp-content/uploads/2016/05/show-memoryusage.png "Show-MemoryUsage")
+![Alt Colorized Memory Usage](http://jdhitsolutions.com/blog/wp-content/uploads/2016/05/show-memoryusage.png "Show-MemoryUsage")
 
 ## Test-MemoryUsage ##
 This command can be used to test if memory utilization meets some criteria.

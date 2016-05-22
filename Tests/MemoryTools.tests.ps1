@@ -46,6 +46,11 @@ Describe "MemoryTools Functions" -Tags Functions  {
     }
     It "Should show status as OK" {
         $try.status | Should be "OK"
+     
+    }
+    It "Should filter on Status" {
+       (Get-MemoryUsage -computername WinTest -status "OK" | measure-object).count | Should be 1
+          (Get-MemoryUsage -computername WinTest -status "Critical" | measure-object).count | Should be 0
     }
     It "Should show computername as WinTest" {
         $try.computername | should be "WinTest"
@@ -217,11 +222,11 @@ Describe "MemoryTools Functions" -Tags Functions  {
             $r[0].Computername | Should Be "WinTest"
         }
 
-        It "Should have a Form of SODIMM" {
+        It "Should have a form value of SODIMM" {
             $r[0].Form | Should Be "SODIMM"
         }
 
-        It "Should have a Capacity of 16" {
+        It "Should have a capacity value of 16" {
             $r[0].CapacityGB | Should Be 16
         }
         It "Should have a clock speed of 2133" {

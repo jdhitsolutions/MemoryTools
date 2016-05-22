@@ -12,7 +12,9 @@ Param(
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername
+[object[]]$Computername = $env:Computername,
+[ValidateSet("All","OK","Warning","Critical")]
+[string]$Status = "All"
 )
 
 Begin {
@@ -42,17 +44,17 @@ foreach ($item in $computername) {
         $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)
     
         if ($pctFree -ge 45) {
-            $Status = "OK"
+            $StatusProperty = "OK"
         }
         elseif ($pctFree -ge 15 ) {
-            $Status = "Warning"
+            $StatusProperty = "Warning"
         }
         else {
-            $Status = "Critical"
+            $StatusProperty = "Critical"
         }
 
         $obj = $os | Select @{Name="Computername";Expression={ $_.PSComputername.toUpper()}},
-        @{Name = "Status";Expression = {$Status}},
+        @{Name = "Status";Expression = {$StatusProperty}},
         @{Name = "PctFree"; Expression =  {$pctFree}},
         @{Name = "FreeGB";Expression = {[math]::Round($_.FreePhysicalMemory/1mb,2)}},
         @{Name = "TotalGB";Expression = {[int]($_.TotalVisibleMemorySize/1mb)}} 
@@ -61,7 +63,13 @@ foreach ($item in $computername) {
         $obj.psobject.typenames.insert(0,"MyMemoryUsage")
 
         #write object to the pipeline
-        $obj
+        if ($Status -eq 'All') {
+            $obj
+        }
+        else {
+            #write filtered results
+            $obj | Where {$_.Status -match $Status}
+        }
         #reset variables just in case
         Clear-Variable OS,obj
 

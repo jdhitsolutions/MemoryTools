@@ -19,6 +19,14 @@ Describe "MemoryTools Module" {
         $mod.ExportedFormatFiles.count | Should BeGreaterThan 0
     }
     
+    It "Should have an integer value for `$MemoryToolsOK" {
+        ($MemoryToolsOK).GetType().Name | Should be 'Int32'
+    }
+
+    It "Should have an integer value for `$MemoryToolsWarning" {
+        ($MemoryToolsWarning).GetType().Name | Should be 'Int32'
+    }
+
 } #describe module
 
   

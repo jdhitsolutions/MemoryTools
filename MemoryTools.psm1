@@ -43,13 +43,14 @@ foreach ($item in $computername) {
     if ($os) {
         $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)
     
-        if ($pctFree -ge 45) {
+        if ($pctFree -ge $MemoryToolsOK) {
             $StatusProperty = "OK"
         }
-        elseif ($pctFree -ge 15 ) {
+        elseif ($pctFree -ge $MemoryToolsWarning ) {
             $StatusProperty = "Warning"
         }
         else {
+            #anything else is considered critical
             $StatusProperty = "Critical"
         }
 
@@ -422,9 +423,6 @@ End {
 } #get-PhysicalMemory
 #endregion
 
-#define some aliases
-Set-Alias -Name shmem -Value Show-MemoryUsage
-Set-Alias -Name gmem -Value Get-MemoryUsage
-Set-Alias -Name gmemp -Value Get-MemoryPerformance
-Set-Alias -Name tmem -Value Test-MemoryUsage
-Set-Alias -Name gpmem -Value Get-Physicalmemory
+#import module variables and aliases
+. $PSScriptRoot\MemoryToolsSettings.ps1
+

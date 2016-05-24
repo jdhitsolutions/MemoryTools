@@ -120,16 +120,20 @@ End {
 
 Function Show-MemoryUsage {
 
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName='ComputernameSet')]
 Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername
+[string[]]$Computername = $env:Computername,
+
+[Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
@@ -153,6 +157,22 @@ Write-Host $title -foregroundColor Cyan
 } #begin
 
 Process {
+
+ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+    foreach ($Computer in $Computername) {
+        #get memory usage data for each computer
+        $data += Get-MemoryUsage -Computername $computer
+    }
+  }
+else {
+    foreach ($session in $CIMSession) {
+        #get memory usage data for each computer
+        $data += Get-MemoryUsage -CimSession $session
+    }
+}
+<#
 foreach ($item in $computername) {
 
     if ($item.computername -is [string]) {
@@ -167,6 +187,8 @@ foreach ($item in $computername) {
     $data += Get-MemoryUsage -Computername $computer
     
  } #foreach
+ #>
+
 } #Process
 
 End {
@@ -267,109 +289,124 @@ End {
 
 Function Test-MemoryUsage {
 #get-memory usage and test for a minimum %free, FreeGB, TotalGB or UsedGB
-[cmdletbinding(DefaultParameterSetName="Percent")]
+[cmdletbinding(DefaultParameterSetName='PercentComputer')]
 Param(
-[Parameter(
- Position = 0,
- ValueFromPipeline,
- ValueFromPipelineByPropertyName
- )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername,
-[Parameter(ParameterSetName="Percent")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="PercentComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="FreeComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="TotalComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="UsedComputer")]
+[string[]]$Computername = $env:Computername,
+
+[Parameter(mandatory,ParameterSetName="PercentCIM")]
+[Parameter(mandatory,ParameterSetName="FreeCIM")]
+[Parameter(mandatory,ParameterSetName="TotalCIM")]
+[Parameter(mandatory,ParameterSetName="UsedCIM")]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession,
+
+
+[Parameter(HelpMessage = "Enter the minimum % free memory",ParameterSetName="PercentComputer")]
+[Parameter(HelpMessage = "Enter the minimum % free memory",ParameterSetName="PercentCIM")]
 [ValidateNotNullorEmpty()]
 [int]$PercentFree = 50,
-[Parameter(ParameterSetName="Free")]
+
+[Parameter(HelpMessage = "Enter the minimum free memory in GB",Mandatory,ParameterSetName="FreeComputer")]
+[Parameter(HelpMessage = "Enter the minimum free memory in GB",Mandatory,ParameterSetName="FreeCIM")]
 [ValidateNotNullorEmpty()]
 [double]$FreeGB,
+
 [ValidateNotNullorEmpty()]
-[Parameter(ParameterSetName="Total")]
+[Parameter(HelpMessage = "Enter the minimum total memory in GB",Mandatory,ParameterSetName="TotalComputer")]
+[Parameter(HelpMessage = "Enter the minimum total memory in GB",Mandatory,ParameterSetName="TotalCIM")]
 [int]$TotalGB,
-[Parameter(ParameterSetName="Used")]
+
+[Parameter(HelpMessage = "Enter the minimum amount of used memory in GB",Mandatory,ParameterSetName="UsedComputer")]
+[Parameter(HelpMessage = "Enter the manimum amount of used memory in GB",Mandatory,ParameterSetName="UsedCIM")]
 [ValidateNotNullorEmpty()]
 [double]$UsedGB,
+
 [switch]$Quiet
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
-     Switch ($PSCmdlet.ParameterSetName) {
-            "Used"  { Write-Verbose "Testing if Used GB is >= to $UsedGB" }
-            "Total" { Write-Verbose "Testing if Total size is >= $TotalGB"  }
-            "Free"  { Write-Verbose "Testing if Free GB is >= $FreeGB" }
-            "Percent"  { Write-Verbose "Testing if Percent free is >= $PercentFree" }
-            } #switch
+   
     Write-Verbose "PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
+if ($Computername) {
+    $usage = foreach ($Computer in $Computername) {
+        #get memory usage data for each computer
+        Get-MemoryUsage -Computername $computer
     }
-    else {
-        $computer = $item
+  }
+else {
+    $usage = foreach ($session in $CIMSession) {
+        #get memory usage data for each computer
+        Get-MemoryUsage -CimSession $session -ErrorAction
     }
-        Write-Verbose "Processing $computer"
-        Try {
-            $mem = Get-MemoryUsage -Computername $computer -ErrorAction Stop
-            Switch ($PSCmdlet.ParameterSetName) {
-            "Used"  {  
-                        $used = $mem.TotalGB - $mem.FreeGB
-                        if ($Used -ge $mem.usedGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,@{Name="UsedGB";Expression={$used}},
-                        @{Name="Test";Expression={$test}}
+}
+
+Foreach ($mem in $usage) {    
+    
+        Switch -regex ($PSCmdlet.ParameterSetName) {
+        "Used"  {  
+                Write-Verbose "Testing if Used GB is >= to $UsedGB" 
+                    $used = $mem.TotalGB - $mem.FreeGB
+                    Write-Verbose "Used = $used"
+                    if ($Used -ge $usedGB) {
+                        $Test = $True
                     }
-            "Total" {
-                        if ($mem.TotalGB -ge $TotalGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,TotalGB,@{Name="Test";Expression={$test}}
+                    else {
+                        $Test = $False
                     }
-            "Free"  {
-                        if ($FreeGB -le $mem.FreeGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,FreeGB,@{Name="Test";Expression={$test}}
+                    $data = $mem | Select Computername,@{Name="UsedGB";Expression={$used}},
+                    @{Name="Test";Expression={$test}}
+                }
+        "Total" {
+                Write-Verbose "Testing if Total size is >= $TotalGB"
+                    if ($mem.TotalGB -ge $TotalGB) {
+                        $Test = $True
                     }
-            "Percent"  {
-                        if ($mem.PctFree -ge $percentFree) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,PctFree,@{Name="Test";Expression={$test}}
-                        }
-            } #switch
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,TotalGB,@{Name="Test";Expression={$test}}
+                }
+        "Free"  {
+                Write-Verbose "Testing if Free GB is >= $FreeGB"
+                    if ($FreeGB -le $mem.FreeGB) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,FreeGB,@{Name="Test";Expression={$test}}
+                }
+        "Percent"  {
+                Write-Verbose "Testing if Percent free is >= $PercentFree"
+                    if ($mem.PctFree -ge $percentFree) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,PctFree,@{Name="Test";Expression={$test}}
+                    }
+        } #switch
             
-            if ($Quiet) {
-                $Test
-            }
-            else {
-                $data
-            }
-        } #try
-        Catch {
-            Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
+        if ($Quiet) {
+            $Test
         }
-    } #foreach
+        else {
+            $data
+        }
+ } #foreach $mem
+
 } #process
 End {
     Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"

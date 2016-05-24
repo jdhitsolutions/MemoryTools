@@ -3,42 +3,65 @@
 #region Define functions
 
 Function Get-MemoryUsage {
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName='ComputernameSet')]
 Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername,
+[string[]]$Computername = $env:Computername,
+
 [ValidateSet("All","OK","Warning","Critical")]
-[string]$Status = "All"
+[string]$Status = "All",
+
+[Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
     Write-Verbose "PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
+
+    $MyCimSession=@()
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-    Write-Verbose "Processing $computer"
+ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "Creating temporary CIM Session to $item"
+        $MyCIMSession += New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+ 
+    Write-Verbose "Processing $($session.computername)"  
+
     Try {
-        $os = Get-CimInstance -classname Win32_OperatingSystem -ComputerName $Computer -ErrorAction stop
+        $os = Get-CimInstance -classname Win32_OperatingSystem -CimSession $session -ErrorAction stop
     }
     Catch {
-        Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
+        Write-Error "[$($session.Computername.toUpper())] Failed to retrieve data. $($_.exception.message)"
     }
     if ($os) {
         $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)
@@ -72,13 +95,24 @@ foreach ($item in $computername) {
             $obj | Where {$_.Status -match $Status}
         }
         #reset variables just in case
-        Clear-Variable OS,obj
+        Clear-Variable OS,obj,Mycimsession
 
     } #if OS
+       
 } #foreach
+
+ #clean up
+    if ($tmpSess) {
+        Write-Verbose "Removing temporary sessions"
+        $tmpSess | out-string | write-Verbose
+        $tmpSess | Remove-CimSession
+        remove-Variable tmpsess
+        get-cimsession | out-string | write-verbose
+    }
 } #process
 
 End {
+    
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"
 } #end
 

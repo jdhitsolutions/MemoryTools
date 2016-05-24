@@ -24,7 +24,6 @@ Param(
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
     Write-Verbose "PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 
@@ -104,15 +103,11 @@ foreach ($session in $MyCIMSession) {
  #clean up
     if ($tmpSess) {
         Write-Verbose "Removing temporary sessions"
-        $tmpSess | out-string | write-Verbose
-        $tmpSess | Remove-CimSession
         remove-Variable tmpsess
-        get-cimsession | out-string | write-verbose
     }
 } #process
 
-End {
-    
+End {    
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"
 } #end
 
@@ -215,78 +210,6 @@ End {
 
 } #end Show-MemoryUsage
 
-Function Get-MemoryPerformance {
-
-[cmdletbinding()]
-Param(
-[Parameter(
- Position = 0,
- ValueFromPipeline,
- ValueFromPipelineByPropertyName
- )]
-[ValidateNotNullorEmpty()]
-[Alias("cn")]
-[object[]]$Computername = $env:Computername
-)
-
-Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    <#
-        Get all memory performance counters. Assuming counters on the 
-        client are the same as on the server. Sort by name.
-    #>
-    $all = (get-counter -ListSet Memory*).counter | Sort-Object
-    Write-Verbose "PSBoundParameters"
-    Write-Verbose ($PSBoundParameters | Out-String)
-} #begin
-
-Process {
-foreach ($item in $computername) {
-
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-        Write-Verbose "Getting memory performance data from $Computer"
-        Try {
-            $data =  Get-Counter -Counter $all -computername $computer -ErrorAction Stop
-            if ($data.CounterSamples) {
-                $data.counterSamples | Select @{Name="Counter";Expression={ $_.path.Split("\")[-1]}},
-                @{Name="Value";Expression={$_.cookedValue}} | foreach -begin {
-             $h = [ordered]@{
-              Computername = $computer.ToUpper()
-              DateTime = (Get-Date)
-              }
-             } -process {
-             #replace any / or - with spaces
-             $rawname = $_.counter.replace("/"," ").replace("-"," ")
-             #make proper case
-             $proper = $rawname.split(" ").foreach({"$(([string]($_[0])).toUpper())$($_.substring(1))"})
-             #join to new word
-             $property = $proper -join ""
-             #add to the hash table
-             $h.Add($property,$_.Value)
-            } -end {
-                #turn the hashtable into an object
-                [pscustomobject]$h
-            }
-            } #if data
-        } #try
-        Catch {
-            Write-Error "Failed to get performance data from $($computer.toupper()). $($_.exception.message)"
-        }
-    } #foreach
-
-} #process
-
-End {
-    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
-} #end
-} #end Get-MemoryPerformance
-
 Function Test-MemoryUsage {
 #get-memory usage and test for a minimum %free, FreeGB, TotalGB or UsedGB
 [cmdletbinding(DefaultParameterSetName='PercentComputer')]
@@ -299,10 +222,10 @@ Param(
 [Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="UsedComputer")]
 [string[]]$Computername = $env:Computername,
 
-[Parameter(mandatory,ParameterSetName="PercentCIM")]
-[Parameter(mandatory,ParameterSetName="FreeCIM")]
-[Parameter(mandatory,ParameterSetName="TotalCIM")]
-[Parameter(mandatory,ParameterSetName="UsedCIM")]
+[Parameter(Mandatory,ParameterSetName="PercentCIM")]
+[Parameter(Mandatory,ParameterSetName="FreeCIM")]
+[Parameter(Mandatory,ParameterSetName="TotalCIM")]
+[Parameter(Mandatory,ParameterSetName="UsedCIM")]
 [Microsoft.Management.Infrastructure.CimSession[]]$CimSession,
 
 
@@ -414,7 +337,7 @@ End {
 
 } #end Test-MemoryUsage
 
-Function Get-PhysicalMemory {
+Function Get-MemoryPerformance {
 
 [cmdletbinding()]
 Param(
@@ -426,6 +349,86 @@ Param(
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
 [object[]]$Computername = $env:Computername
+)
+
+Begin {
+    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    <#
+        Get all memory performance counters. Assuming counters on the 
+        client are the same as on the server. Sort by name.
+    #>
+    $all = (get-counter -ListSet Memory*).counter | Sort-Object
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
+} #begin
+
+Process {
+foreach ($item in $computername) {
+
+    if ($item.computername -is [string]) {
+        Write-Verbose "Using Computername property"
+        $computer = $item.Computername
+    }
+    else {
+        $computer = $item
+    }
+        Write-Verbose "Getting memory performance data from $Computer"
+        Try {
+            $data =  Get-Counter -Counter $all -computername $computer -ErrorAction Stop
+            if ($data.CounterSamples) {
+                $data.counterSamples | Select @{Name="Counter";Expression={ $_.path.Split("\")[-1]}},
+                @{Name="Value";Expression={$_.cookedValue}} | foreach -begin {
+             $h = [ordered]@{
+              Computername = $computer.ToUpper()
+              DateTime = (Get-Date)
+              }
+             } -process {
+             #replace any / or - with spaces
+             $rawname = $_.counter.replace("/"," ").replace("-"," ")
+             #make proper case
+             $proper = $rawname.split(" ").foreach({"$(([string]($_[0])).toUpper())$($_.substring(1))"})
+             #join to new word
+             $property = $proper -join ""
+             #add to the hash table
+             $h.Add($property,$_.Value)
+            } -end {
+                #turn the hashtable into an object
+                [pscustomobject]$h
+            }
+            } #if data
+        } #try
+        Catch {
+            Write-Error "Failed to get performance data from $($computer.toupper()). $($_.exception.message)"
+        }
+    } #foreach
+
+} #process
+
+End {
+    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+} #end
+} #end Get-MemoryPerformance
+
+Function Get-PhysicalMemory {
+
+[cmdletbinding(DefaultParameterSetName="ComputerNameSet")]
+Param(
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
+ )]
+[ValidateNotNullorEmpty()]
+[Alias("cn")]
+[string[]]$Computername = $env:Computername,
+
+[Parameter(
+ ParameterSetName='CimInstanceSessionSet', 
+ Mandatory, 
+ ValueFromPipeline
+ )]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
@@ -464,17 +467,31 @@ Begin {
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
+Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     $MyCIMSession = foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "Creating temporary CIM Session to $item"
+        New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+    Write-Verbose "Processing $($session.computername)"  
         Try {
-        Get-CimInstance win32_physicalmemory -computername $computer | 
+        Get-CimInstance win32_physicalmemory -cimsession $session | 
         Select @{Name="Computername";Expression={$_.PSComputername.ToUpper()}},
         Manufacturer,@{Name="CapacityGB";Expression={$_.Capacity/1GB}},
         @{Name="Form";Expression={$form.item($_.FormFactor -as [int])}},
@@ -485,6 +502,11 @@ foreach ($item in $computername) {
          Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
         }
     } #foreach
+    #clean up
+    if ($tmpSess) {
+        Write-Verbose "Removing temporary sessions"
+        remove-Variable tmpsess
+    }
 } #process
 
 End {
@@ -492,6 +514,7 @@ End {
 } #end
 
 } #get-PhysicalMemory
+
 #endregion
 
 #import module variables and aliases

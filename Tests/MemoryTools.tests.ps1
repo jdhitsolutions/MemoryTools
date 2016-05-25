@@ -2,6 +2,10 @@
 
 #Show-MemoryUsage can't be tested because it doesn't write anything to the pipeline
 
+Write-Host "Tests are still in development" -ForegroundColor Yellow
+return
+
+
 Import-Module ..\MemoryTools
 
 inModuleScope MemoryTools {

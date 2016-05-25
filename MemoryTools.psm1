@@ -103,6 +103,7 @@ foreach ($session in $MyCIMSession) {
  #clean up
     if ($tmpSess) {
         Write-Verbose "Removing temporary sessions"
+        $tmpSess | Remove-CimSession
         remove-Variable tmpsess
     }
 } #process
@@ -167,22 +168,6 @@ else {
         $data += Get-MemoryUsage -CimSession $session
     }
 }
-<#
-foreach ($item in $computername) {
-
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-
-    #get memory usage data for each computer
-    $data += Get-MemoryUsage -Computername $computer
-    
- } #foreach
- #>
 
 } #Process
 
@@ -505,6 +490,7 @@ foreach ($session in $MyCIMSession) {
     #clean up
     if ($tmpSess) {
         Write-Verbose "Removing temporary sessions"
+        $tmpSess | Remove-CimSession
         remove-Variable tmpsess
     }
 } #process

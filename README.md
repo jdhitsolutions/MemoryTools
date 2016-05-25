@@ -4,6 +4,8 @@ This module contains a set of PowerShell functions for reporting on computer
 memory utilization and configuration. The commands use Get-CimInstance so
 remote computers must be running PowerShell 3.0 or later.
 
+The project is described on my blog at http://bit.ly/1Tooj3Q
+
 ## Get-MemoryUsage ##
 This command will write a custom memory utilization object to the pipeline
 that indicates the current memory state.

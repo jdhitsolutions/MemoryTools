@@ -3,42 +3,64 @@
 #region Define functions
 
 Function Get-MemoryUsage {
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName='ComputernameSet')]
 Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername,
+[string[]]$Computername = $env:Computername,
+
 [ValidateSet("All","OK","Warning","Critical")]
-[string]$Status = "All"
+[string]$Status = "All",
+
+[Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
     Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
     Write-Verbose "PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
+
+    $MyCimSession=@()
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-    Write-Verbose "Processing $computer"
+ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "Creating temporary CIM Session to $item"
+        $MyCIMSession += New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+ 
+    Write-Verbose "Processing $($session.computername)"  
+
     Try {
-        $os = Get-CimInstance -classname Win32_OperatingSystem -ComputerName $Computer -ErrorAction stop
+        $os = Get-CimInstance -classname Win32_OperatingSystem -CimSession $session -ErrorAction stop
     }
     Catch {
-        Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
+        Write-Error "[$($session.Computername.toUpper())] Failed to retrieve data. $($_.exception.message)"
     }
     if ($os) {
         $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)
@@ -72,13 +94,21 @@ foreach ($item in $computername) {
             $obj | Where {$_.Status -match $Status}
         }
         #reset variables just in case
-        Clear-Variable OS,obj
+        Clear-Variable OS,obj,Mycimsession
 
     } #if OS
+       
 } #foreach
+
+ #clean up
+    if ($tmpSess) {
+        Write-Verbose "Removing temporary sessions"
+        $tmpSess | Remove-CimSession
+        remove-Variable tmpsess
+    }
 } #process
 
-End {
+End {    
     Write-Verbose "Ending: $($MyInvocation.Mycommand)"
 } #end
 
@@ -86,16 +116,20 @@ End {
 
 Function Show-MemoryUsage {
 
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName='ComputernameSet')]
 Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername
+[string[]]$Computername = $env:Computername,
+
+[Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
@@ -119,20 +153,22 @@ Write-Host $title -foregroundColor Cyan
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
+ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
 
-    #get memory usage data for each computer
-    $data += Get-MemoryUsage -Computername $computer
-    
- } #foreach
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+    foreach ($Computer in $Computername) {
+        #get memory usage data for each computer
+        $data += Get-MemoryUsage -Computername $computer
+    }
+  }
+else {
+    foreach ($session in $CIMSession) {
+        #get memory usage data for each computer
+        $data += Get-MemoryUsage -CimSession $session
+    }
+}
+
 } #Process
 
 End {
@@ -158,6 +194,133 @@ End {
 } #end
 
 } #end Show-MemoryUsage
+
+Function Test-MemoryUsage {
+#get-memory usage and test for a minimum %free, FreeGB, TotalGB or UsedGB
+[cmdletbinding(DefaultParameterSetName='PercentComputer')]
+Param(
+[ValidateNotNullorEmpty()]
+[Alias("cn")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="PercentComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="FreeComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="TotalComputer")]
+[Parameter(Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName,ParameterSetName="UsedComputer")]
+[string[]]$Computername = $env:Computername,
+
+[Parameter(Mandatory,ParameterSetName="PercentCIM")]
+[Parameter(Mandatory,ParameterSetName="FreeCIM")]
+[Parameter(Mandatory,ParameterSetName="TotalCIM")]
+[Parameter(Mandatory,ParameterSetName="UsedCIM")]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession,
+
+
+[Parameter(HelpMessage = "Enter the minimum % free memory",ParameterSetName="PercentComputer")]
+[Parameter(HelpMessage = "Enter the minimum % free memory",ParameterSetName="PercentCIM")]
+[ValidateNotNullorEmpty()]
+[int]$PercentFree = 50,
+
+[Parameter(HelpMessage = "Enter the minimum free memory in GB",Mandatory,ParameterSetName="FreeComputer")]
+[Parameter(HelpMessage = "Enter the minimum free memory in GB",Mandatory,ParameterSetName="FreeCIM")]
+[ValidateNotNullorEmpty()]
+[double]$FreeGB,
+
+[ValidateNotNullorEmpty()]
+[Parameter(HelpMessage = "Enter the minimum total memory in GB",Mandatory,ParameterSetName="TotalComputer")]
+[Parameter(HelpMessage = "Enter the minimum total memory in GB",Mandatory,ParameterSetName="TotalCIM")]
+[int]$TotalGB,
+
+[Parameter(HelpMessage = "Enter the minimum amount of used memory in GB",Mandatory,ParameterSetName="UsedComputer")]
+[Parameter(HelpMessage = "Enter the manimum amount of used memory in GB",Mandatory,ParameterSetName="UsedCIM")]
+[ValidateNotNullorEmpty()]
+[double]$UsedGB,
+
+[switch]$Quiet
+)
+
+Begin {
+    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+   
+    Write-Verbose "PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
+} #begin
+
+Process {
+
+if ($Computername) {
+    $usage = foreach ($Computer in $Computername) {
+        #get memory usage data for each computer
+        Get-MemoryUsage -Computername $computer
+    }
+  }
+else {
+    $usage = foreach ($session in $CIMSession) {
+        #get memory usage data for each computer
+        Get-MemoryUsage -CimSession $session -ErrorAction
+    }
+}
+
+Foreach ($mem in $usage) {    
+    
+        Switch -regex ($PSCmdlet.ParameterSetName) {
+        "Used"  {  
+                Write-Verbose "Testing if Used GB is >= to $UsedGB" 
+                    $used = $mem.TotalGB - $mem.FreeGB
+                    Write-Verbose "Used = $used"
+                    if ($Used -ge $usedGB) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,@{Name="UsedGB";Expression={$used}},
+                    @{Name="Test";Expression={$test}}
+                }
+        "Total" {
+                Write-Verbose "Testing if Total size is >= $TotalGB"
+                    if ($mem.TotalGB -ge $TotalGB) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,TotalGB,@{Name="Test";Expression={$test}}
+                }
+        "Free"  {
+                Write-Verbose "Testing if Free GB is >= $FreeGB"
+                    if ($FreeGB -le $mem.FreeGB) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,FreeGB,@{Name="Test";Expression={$test}}
+                }
+        "Percent"  {
+                Write-Verbose "Testing if Percent free is >= $PercentFree"
+                    if ($mem.PctFree -ge $percentFree) {
+                        $Test = $True
+                    }
+                    else {
+                        $Test = $False
+                    }
+                    $data = $mem | Select Computername,PctFree,@{Name="Test";Expression={$test}}
+                    }
+        } #switch
+            
+        if ($Quiet) {
+            $Test
+        }
+        else {
+            $data
+        }
+ } #foreach $mem
+
+} #process
+End {
+    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+} #end
+
+} #end Test-MemoryUsage
 
 Function Get-MemoryPerformance {
 
@@ -231,130 +394,26 @@ End {
 } #end
 } #end Get-MemoryPerformance
 
-Function Test-MemoryUsage {
-#get-memory usage and test for a minimum %free, FreeGB, TotalGB or UsedGB
-[cmdletbinding(DefaultParameterSetName="Percent")]
-Param(
-[Parameter(
- Position = 0,
- ValueFromPipeline,
- ValueFromPipelineByPropertyName
- )]
-[ValidateNotNullorEmpty()]
-[Alias("cn")]
-[object[]]$Computername = $env:Computername,
-[Parameter(ParameterSetName="Percent")]
-[ValidateNotNullorEmpty()]
-[int]$PercentFree = 50,
-[Parameter(ParameterSetName="Free")]
-[ValidateNotNullorEmpty()]
-[double]$FreeGB,
-[ValidateNotNullorEmpty()]
-[Parameter(ParameterSetName="Total")]
-[int]$TotalGB,
-[Parameter(ParameterSetName="Used")]
-[ValidateNotNullorEmpty()]
-[double]$UsedGB,
-[switch]$Quiet
-)
-
-Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
-     Switch ($PSCmdlet.ParameterSetName) {
-            "Used"  { Write-Verbose "Testing if Used GB is >= to $UsedGB" }
-            "Total" { Write-Verbose "Testing if Total size is >= $TotalGB"  }
-            "Free"  { Write-Verbose "Testing if Free GB is >= $FreeGB" }
-            "Percent"  { Write-Verbose "Testing if Percent free is >= $PercentFree" }
-            } #switch
-    Write-Verbose "PSBoundParameters"
-    Write-Verbose ($PSBoundParameters | Out-String)
-} #begin
-
-Process {
-foreach ($item in $computername) {
-
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-        Write-Verbose "Processing $computer"
-        Try {
-            $mem = Get-MemoryUsage -Computername $computer -ErrorAction Stop
-            Switch ($PSCmdlet.ParameterSetName) {
-            "Used"  {  
-                        $used = $mem.TotalGB - $mem.FreeGB
-                        if ($Used -ge $mem.usedGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,@{Name="UsedGB";Expression={$used}},
-                        @{Name="Test";Expression={$test}}
-                    }
-            "Total" {
-                        if ($mem.TotalGB -ge $TotalGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,TotalGB,@{Name="Test";Expression={$test}}
-                    }
-            "Free"  {
-                        if ($FreeGB -le $mem.FreeGB) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,FreeGB,@{Name="Test";Expression={$test}}
-                    }
-            "Percent"  {
-                        if ($mem.PctFree -ge $percentFree) {
-                            $Test = $True
-                        }
-                        else {
-                            $Test = $False
-                        }
-                        $data = $mem | Select Computername,PctFree,@{Name="Test";Expression={$test}}
-                        }
-            } #switch
-            
-            if ($Quiet) {
-                $Test
-            }
-            else {
-                $data
-            }
-        } #try
-        Catch {
-            Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
-        }
-    } #foreach
-} #process
-End {
-    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
-} #end
-
-} #end Test-MemoryUsage
-
 Function Get-PhysicalMemory {
 
-[cmdletbinding()]
+[cmdletbinding(DefaultParameterSetName="ComputerNameSet")]
 Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername
+[string[]]$Computername = $env:Computername,
+
+[Parameter(
+ ParameterSetName='CimInstanceSessionSet', 
+ Mandatory, 
+ ValueFromPipeline
+ )]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
@@ -393,17 +452,31 @@ Begin {
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
+Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     $MyCIMSession = foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "Creating temporary CIM Session to $item"
+        New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+    Write-Verbose "Processing $($session.computername)"  
         Try {
-        Get-CimInstance win32_physicalmemory -computername $computer | 
+        Get-CimInstance win32_physicalmemory -cimsession $session | 
         Select @{Name="Computername";Expression={$_.PSComputername.ToUpper()}},
         Manufacturer,@{Name="CapacityGB";Expression={$_.Capacity/1GB}},
         @{Name="Form";Expression={$form.item($_.FormFactor -as [int])}},
@@ -414,6 +487,12 @@ foreach ($item in $computername) {
          Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
         }
     } #foreach
+    #clean up
+    if ($tmpSess) {
+        Write-Verbose "Removing temporary sessions"
+        $tmpSess | Remove-CimSession
+        remove-Variable tmpsess
+    }
 } #process
 
 End {
@@ -421,6 +500,7 @@ End {
 } #end
 
 } #get-PhysicalMemory
+
 #endregion
 
 #import module variables and aliases

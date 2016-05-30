@@ -19,6 +19,7 @@ Param(
 [string]$Status = "All",
 
 [Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[ValidateNotNullorEmpty()]
 [Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
@@ -129,6 +130,7 @@ Param(
 [string[]]$Computername = $env:Computername,
 
 [Parameter(ParameterSetName='CimInstanceSessionSet', Mandatory, ValueFromPipeline)]
+[ValidateNotNullorEmpty()]
 [Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
@@ -329,11 +331,20 @@ Param(
 [Parameter(
  Position = 0,
  ValueFromPipeline,
- ValueFromPipelineByPropertyName
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
  )]
 [ValidateNotNullorEmpty()]
 [Alias("cn")]
-[object[]]$Computername = $env:Computername
+[string[]]$Computername = $env:Computername,
+
+[Parameter(
+ ParameterSetName='CimInstanceSessionSet', 
+ Mandatory, 
+ ValueFromPipeline
+ )]
+ [ValidateNotNullorEmpty()]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 
 Begin {
@@ -343,49 +354,56 @@ Begin {
         client are the same as on the server. Sort by name.
     #>
     $all = (get-counter -ListSet Memory*).counter | Sort-Object
+    
+    #get a list of class properties. Some of the properties don't 
+    #appear to have any values and are different than what you get
+    #with Get-Counter
+    $perfclass = get-cimclass Win32_PerfFormattedData_PerfOS_Memory
+    $selected = $perfclass.CimClassProperties | select -Skip 9 -expandProperty Name
+    $selected+= @{Name="DateTime";Expression = {(Get-Date)}}
+    $selected+= @{Name="ComputerName";Expression={$session.ComputerName }}
     Write-Verbose "PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
 Process {
-foreach ($item in $computername) {
 
-    if ($item.computername -is [string]) {
-        Write-Verbose "Using Computername property"
-        $computer = $item.Computername
-    }
-    else {
-        $computer = $item
-    }
-        Write-Verbose "Getting memory performance data from $Computer"
-        Try {
-            $data =  Get-Counter -Counter $all -computername $computer -ErrorAction Stop
-            if ($data.CounterSamples) {
-                $data.counterSamples | Select @{Name="Counter";Expression={ $_.path.Split("\")[-1]}},
-                @{Name="Value";Expression={$_.cookedValue}} | foreach -begin {
-             $h = [ordered]@{
-              Computername = $computer.ToUpper()
-              DateTime = (Get-Date)
-              }
-             } -process {
-             #replace any / or - with spaces
-             $rawname = $_.counter.replace("/"," ").replace("-"," ")
-             #make proper case
-             $proper = $rawname.split(" ").foreach({"$(([string]($_[0])).toUpper())$($_.substring(1))"})
-             #join to new word
-             $property = $proper -join ""
-             #add to the hash table
-             $h.Add($property,$_.Value)
-            } -end {
-                #turn the hashtable into an object
-                [pscustomobject]$h
-            }
-            } #if data
+Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     $MyCIMSession = foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "Creating temporary CIM Session to $item"
+        New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+       Try {
+        Get-CimInstance -classname Win32_PerfFormattedData_PerfOS_Memory -CimSession $session | 
+        Select-Object -property $selected
         } #try
         Catch {
-            Write-Error "Failed to get performance data from $($computer.toupper()). $($_.exception.message)"
+            Write-Error "Failed to get performance data from $($session.computername.toupper()). $($_.exception.message)"
         }
     } #foreach
+
+    #clean up
+    if ($tmpSess) {
+        Write-Verbose "Removing temporary sessions"
+        $tmpSess | Remove-CimSession
+        remove-Variable tmpsess
+    }
 
 } #process
 
@@ -413,6 +431,7 @@ Param(
  Mandatory, 
  ValueFromPipeline
  )]
+ [ValidateNotNullorEmpty()]
 [Microsoft.Management.Infrastructure.CimSession[]]$CimSession
 )
 

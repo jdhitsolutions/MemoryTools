@@ -2,13 +2,20 @@
 
 #Show-MemoryUsage can't be tested because it doesn't write anything to the pipeline
 
-Write-Host "Tests are still in development" -ForegroundColor Yellow
-return
-
-
 Import-Module ..\MemoryTools
 
 inModuleScope MemoryTools {
+
+#create a sample object like something imported from a CSV file
+    #or other command
+    $computerObject = New-object -typename PSObject -property @{
+      Computername = $env:computername
+      Location = "Chicago"
+      OS = "Windows Server 2012 R2"
+    }
+    
+    #test with CimSessions
+    $testSessions = New-CimSession -computername $env:computername,$env:computername
 
 Describe "Module" {
 
@@ -33,7 +40,12 @@ Describe "Module" {
 
 } #describe module
 
-Describe "Get" {
+Describe "Get-MemoryUsage" -Tags Functions {
+
+    <#
+     I am mocking the results with known values. The tested command will actually
+     use the localhost but the result will be mocked.
+    #>
 
     Mock Get-CimInstance {
         $data = [pscustomobject]@{
@@ -43,91 +55,10 @@ Describe "Get" {
         Caption = "Windows Server 2012 R2 Datacenter"
         }
         Return $Data
-    } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $CimSession -eq "session"}
-    #{$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq "WinTest"}
+    } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" }
     
-    Mock New-CimSession {
-         $data = [pscustomobject]@{
-         ID = 99999
-         Computername = "WinTest"
-         Name = "CimSession99999"
-         InstanceID = New-Guid
-         Protocol = 'WSMAN'        
-        }
-       
-        Return $Data
-    } -ParameterFilter {$ComputerName -eq "WinTest"} # -AND $ErrorAction -eq "Stop"} # -AND $OutVariable -match "tmpSess"}
+    $try = Get-MemoryUsage -computername $env:computername  
 
-    $q = New-Cimsession -ComputerName "WinTest"
-    write-host ($q | out-string) -ForegroundColor cyan
-
-    $try = Get-MemoryUsage -computername WinTest -Verbose
-    
-    write-host ($try | out-string) -ForegroundColor Cyan
-     #test with a piped in object
-     write-host "create ComputerObject" -ForegroundColor Cyan
-    $computerObject = New-object -typename PSObject -property @{
-      Computername = $env:computername
-      Location = "Chicago"
-      OS = "Windows Server 2012 R2"
-    }
-    $computerobject | out-string | write-host -ForegroundColor Cyan
-    #test with CimSessions
-    #$testSessions = New-CimSession -computername $env:computername,$env:computername
-    #write-host $testSessions.count -ForegroundColor cyan
-
-    Context "Get-MemoryUsage" {
-    It "should run with defaults and without error" {
-        {Get-MemoryUsage -ErrorAction stop } | Should not Throw
-    }
-    It "Should show status as OK" {
-        $try.status | Should be "OK"
-    }
-   } 
-
-}  
-
-Describe "Functions" -Tags Functions {
-    Mock Get-CimInstance {
-        $data = [pscustomobject]@{
-        PSComputername = "WinTest"
-        FreePhysicalMemory = 4194304
-        TotalVisibleMemorySize = 8298776
-        }
-        Return $Data
-    } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" -AND $CimSession -eq "session"}
-    #{$Classname -eq "Win32_OperatingSystem" -AND $Computername -eq "WinTest"}
-    
-    Mock New-CimSession {
-         $data = [pscustomobject]@{
-         ID = 99999
-         Computername = "WinTest"
-         Name = "CimSession99999"
-         InstanceID = New-Guid
-         Protocol = 'WSMAN'        
-        }
-        Return $Data
-    } -ParameterFilter {$ComputerName -eq "WinTest" -AND $ErrorAction -eq "Stop"} # -AND $OutVariable -match "tmpSess"}
-
-   # $q = New-Cimsession -ComputerName "WinTest"
-   # write-host ($q | out-string) -ForegroundColor cyan
-
-    $try = Get-MemoryUsage -computername WinTest -Verbose
-    
-    write-host ($try | out-string) -ForegroundColor Cyan
-     #test with a piped in object
-     write-host "create ComputerObject" -ForegroundColor Cyan
-    $computerObject = New-object -typename PSObject -property @{
-      Computername = $env:computername
-      Location = "Chicago"
-      OS = "Windows Server 2012 R2"
-    }
-    $computerobject | out-string | write-host -ForegroundColor Cyan
-    #test with CimSessions
-    #$testSessions = New-CimSession -computername $env:computername,$env:computername
-    #write-host $testSessions.count -ForegroundColor cyan
-
-    Context "Get-MemoryUsage" {
     It "should run with defaults and without error" {
         {Get-MemoryUsage -ErrorAction stop } | Should not Throw
     }
@@ -136,8 +67,8 @@ Describe "Functions" -Tags Functions {
     }
 
     It "Should filter on Status" {
-       (Get-MemoryUsage -computername WinTest -status "OK" | measure-object).count | Should be 1
-          (Get-MemoryUsage -computername WinTest -status "Critical" | measure-object).count | Should be 0
+       (Get-MemoryUsage -computername $env:computername -status "OK" | measure-object).count | Should be 1
+       (Get-MemoryUsage -computername $env:computername -status "Critical" | measure-object).count | Should be 0
     }
     It "Should show computername as WinTest" {
         $try.computername | should be "WinTest"
@@ -163,9 +94,6 @@ Describe "Functions" -Tags Functions {
       
     }
 
-    It "Should accept an object with Computername property" {
-       (Get-MemoryUsage -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
-    }
     It "Should error with a bad computername" {
         { Get-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw
     }
@@ -177,10 +105,23 @@ Describe "Functions" -Tags Functions {
     It "Should accept CIMSessions from the pipeline" {
         ($testSessions | Get-MemoryUsage | Measure-Object).Count | Should be 2
     }
-    } #Get-MemoryUsage
-            
+
+ }
+ 
+ Describe "Test-MemoryUsage" -Tags Functions {       
+ 
+     Mock Get-CimInstance {
+        $data = [pscustomobject]@{
+        PSComputername = "WinTest"
+        FreePhysicalMemory = 4194304
+        TotalVisibleMemorySize = 8298776
+        Caption = "Windows Server 2012 R2 Datacenter"
+        }
+        Return $Data
+    } -ParameterFilter {$Classname -eq "Win32_OperatingSystem" }
+     
     Context "Test-MemoryUsage: Percent"  {
-        $r = Test-Memoryusage -Computername WinTest
+        $r = Test-Memoryusage -Computername $env:computername
         It "Should run with defaults and without error" {
             {Test-MemoryUsage -ErrorAction Stop} | Should Not Throw
         }    
@@ -191,7 +132,7 @@ Describe "Functions" -Tags Functions {
         It "Should have a value >= 50 " {
             $r.PctFree | should begreaterthan 50
         }
-       It "Should accept pipelined input" {
+        It "Should accept pipelined input" {
             { "localhost" | Test-MemoryUsage -ErrorAction stop -quiet} | Should Not Throw
     
             ("localhost","localhost","localhost" | Test-MemoryUsage -quiet | measure-object).count | Should be 3
@@ -199,18 +140,14 @@ Describe "Functions" -Tags Functions {
             ($computerobject,$computerobject | Test-MemoryUsage | Measure-Object).count | Should be 2
       
         }
-
-       It "Should accept an object with Computername property" {
-        ( Test-MemoryUsage -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
-       }
-           It "Should error with a bad computername" {
+        It "Should error with a bad computername" {
             { Test-MemoryUsage -Computername 'F00' -ErrorAction stop } | Should Throw
         }      
        
-    } #Test-MemoryUsage
+    } 
 
     Context "Test-MemoryUsage: Free" {
-        $r = Test-Memoryusage -Computername WinTest -freeGB 4
+        $r = Test-Memoryusage -Computername $env:computername -freeGB 4
         
         It "Should have a Test value of $True" {
             $r.test | should be $True
@@ -221,7 +158,7 @@ Describe "Functions" -Tags Functions {
     }
     
     Context "Test-MemoryUsage: Total" {
-        $r = Test-Memoryusage -Computername WinTest -TotalGB 8
+        $r = Test-Memoryusage -Computername $env:computername -TotalGB 8
         
         It "Should have a Test value of $True" {
             $r.test | should be $True
@@ -232,7 +169,7 @@ Describe "Functions" -Tags Functions {
     }
     
     Context "Test-MemoryUsage: Used" {
-        $r = Test-Memoryusage -Computername WinTest -UsedGB 4
+        $r = Test-Memoryusage -Computername $env:computername -UsedGB 4
         
         It "Should have a Test value of $True" {
             $r.test | should be $True
@@ -242,8 +179,10 @@ Describe "Functions" -Tags Functions {
         }
 
     }
+}
 
-    Context "Get-MemoryPerformance" {
+Describe "Get-MemoryPerformance" -Tags Functions {
+
         It "Should run with defaults and without error" {
             {Get-MemoryPerformance -ErrorAction Stop} | Should Not Throw
         }
@@ -271,15 +210,14 @@ Describe "Functions" -Tags Functions {
             ($computerobject,$computerobject | Get-MemoryPerformance | Measure-Object).count | Should be 2
         }
 
-        It "Should accept an object with Computername property" {
-            (Get-MemoryPerformance -computername $computerobject,$computerobject | Measure-Object).count | Should be 2
-        }
-       It "Should error with a bad computername" {
+        It "Should error with a bad computername" {
         { Get-MemoryPerformance -Computername 'F00' -ErrorAction stop } | Should Throw
     }
-    } #Get-MemoryPerformance
 
-    Context "Get-PhysicalMemory" {
+}
+
+Describe "Get-PhysicalMemory" -Tags Functions {
+
         Mock Get-CimInstance {
             $data = @(
                 [pscustomobject]@{
@@ -301,13 +239,13 @@ Describe "Functions" -Tags Functions {
                 DeviceLocator = "ChannelA-DIMM1"
                 })
             Return $Data
-        } -ParameterFilter {$Classname -eq "Win32_PhysicalMemory" -AND $Computername -eq "WinTest"}
+        } -ParameterFilter {$Classname -eq "Win32_PhysicalMemory" } 
 
         It "Should run without error" {
          {Get-PhysicalMemory -errorAction Stop} | Should Not Throw
         }
 
-        $r = Get-PhysicalMemory -computername WinTest
+        $r = Get-PhysicalMemory -computername $env:computername
         
         It "Should return 2 objects" {
          $r.count | should be 2
@@ -326,29 +264,20 @@ Describe "Functions" -Tags Functions {
         It "Should have a clock speed of 2133" {
             $r[0].ClockSpeed | Should Be 2133
         }
-     
-        #change the computername to use the mocked command
-        $Computerobject.Computername = "WinTest"
         
         It "Should accept pipelined input" {
             { "localhost" | Get-PhysicalMemory -ErrorAction stop } | Should Not Throw
-    
-            ("WinTest","WinTest","WinTest" | Get-PhysicalMemory | measure-object).count | Should be 6
-            
+                
             ($computerobject,$computerobject | Get-PhysicalMemory | Measure-Object).count | Should be 4
         }
 
-        It "Should accept an object with Computername property" {
-            (Get-PhysicalMemory -computername $computerobject,$computerobject | Measure-Object).count | Should be 4
-        }
        It "Should error with a bad computername" {
         { Get-PhysicalMemory -Computername 'F00' -ErrorAction stop } | Should Throw
     }
 
     #clean up
     $testSessions | Remove-CimSession
-    }
 
-  } #describe functions
+ } 
 
 } #in module

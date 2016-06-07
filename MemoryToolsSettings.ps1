@@ -23,3 +23,4 @@ Set-Alias -Name gmem -Value Get-MemoryUsage
 Set-Alias -Name gmemp -Value Get-MemoryPerformance
 Set-Alias -Name tmem -Value Test-MemoryUsage
 Set-Alias -Name gpmem -Value Get-Physicalmemory
+Set-Alias -name gtop -Value Get-TopProcessMemory

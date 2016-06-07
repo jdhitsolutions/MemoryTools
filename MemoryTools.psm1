@@ -24,8 +24,8 @@ Param(
 )
 
 Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "PSBoundParameters"
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 
     $MyCimSession=@()
@@ -33,15 +33,15 @@ Begin {
 
 Process {
 
- Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+ Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
 
  if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
      #create a temporary cimsession if using a computername
      foreach ($item in $Computername) {
      Try {
-        Write-Verbose "Creating temporary CIM Session to $item"
+        Write-Verbose "[PROCESS] Creating temporary CIM Session to $item"
         $MyCIMSession += New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
-        Write-Verbose "Added session"
+        Write-Verbose "[PROCESS] Added session"
      }
      Catch {
         Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
@@ -49,13 +49,13 @@ Process {
     } #foreach item in computername
  } #if computername parameter set
  else {
-    Write-Verbose "Re-using CimSessions"
+    Write-Verbose "[PROCESS] Re-using CimSessions"
     $MyCimSession = $CimSession
  }
 
 foreach ($session in $MyCIMSession) {
  
-    Write-Verbose "Processing $($session.computername)"  
+    Write-Verbose "[PROCESS] Processing $($session.computername)"  
 
     Try {
         $os = Get-CimInstance -classname Win32_OperatingSystem -CimSession $session -ErrorAction stop
@@ -103,14 +103,14 @@ foreach ($session in $MyCIMSession) {
 
  #clean up
     if ($tmpSess) {
-        Write-Verbose "Removing temporary sessions"
+        Write-Verbose "[PROCESS] Removing temporary sessions"
         $tmpSess | Remove-CimSession
         remove-Variable tmpsess
     }
 } #process
 
 End {    
-    Write-Verbose "Ending: $($MyInvocation.Mycommand)"
+    Write-Verbose "[END    ] $($MyInvocation.Mycommand)"
 } #end
 
 } #end Get-MemoryUsage
@@ -135,8 +135,8 @@ Param(
 )
 
 Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "PSBoundParameters"
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 
     #a formatted report title
@@ -156,7 +156,7 @@ Write-Host $title -foregroundColor Cyan
 
 Process {
 
- Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+ Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
 
  if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
     foreach ($Computer in $Computername) {
@@ -192,7 +192,7 @@ End {
    } #foreach string
     #write an extra blank line 
     write-Host "`n"
-    Write-Verbose "Ending: $($MyInvocation.Mycommand)"
+    Write-Verbose "[END    ] $($MyInvocation.Mycommand)"
 } #end
 
 } #end Show-MemoryUsage
@@ -240,9 +240,9 @@ Param(
 )
 
 Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
    
-    Write-Verbose "PSBoundParameters"
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
@@ -265,9 +265,9 @@ Foreach ($mem in $usage) {
     
         Switch -regex ($PSCmdlet.ParameterSetName) {
         "Used"  {  
-                Write-Verbose "Testing if Used GB is >= to $UsedGB" 
+                Write-Verbose "[PROCESS] Testing if Used GB is >= to $UsedGB" 
                     $used = $mem.TotalGB - $mem.FreeGB
-                    Write-Verbose "Used = $used"
+                    Write-Verbose "[PROCESS] Used = $used"
                     if ($Used -ge $usedGB) {
                         $Test = $True
                     }
@@ -278,7 +278,7 @@ Foreach ($mem in $usage) {
                     @{Name="Test";Expression={$test}}
                 }
         "Total" {
-                Write-Verbose "Testing if Total size is >= $TotalGB"
+                Write-Verbose "[PROCESS] Testing if Total size is >= $TotalGB"
                     if ($mem.TotalGB -ge $TotalGB) {
                         $Test = $True
                     }
@@ -288,7 +288,7 @@ Foreach ($mem in $usage) {
                     $data = $mem | Select Computername,TotalGB,@{Name="Test";Expression={$test}}
                 }
         "Free"  {
-                Write-Verbose "Testing if Free GB is >= $FreeGB"
+                Write-Verbose "[PROCESS] Testing if Free GB is >= $FreeGB"
                     if ($FreeGB -le $mem.FreeGB) {
                         $Test = $True
                     }
@@ -298,7 +298,7 @@ Foreach ($mem in $usage) {
                     $data = $mem | Select Computername,FreeGB,@{Name="Test";Expression={$test}}
                 }
         "Percent"  {
-                Write-Verbose "Testing if Percent free is >= $PercentFree"
+                Write-Verbose "[PROCESS] Testing if Percent free is >= $PercentFree"
                     if ($mem.PctFree -ge $percentFree) {
                         $Test = $True
                     }
@@ -348,35 +348,35 @@ Param(
 )
 
 Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
     <#
         Get all memory performance counters. Assuming counters on the 
         client are the same as on the server. Sort by name.
     #>
-    $all = (get-counter -ListSet Memory*).counter | Sort-Object
+    $all = (Get-Counter -ListSet Memory*).counter | Sort-Object
     
     #get a list of class properties. Some of the properties don't 
     #appear to have any values and are different than what you get
     #with Get-Counter
-    $perfclass = get-cimclass Win32_PerfFormattedData_PerfOS_Memory
+    $perfclass = Get-CimClass -classname Win32_PerfFormattedData_PerfOS_Memory
     $selected = $perfclass.CimClassProperties | select -Skip 9 -expandProperty Name
     $selected+= @{Name="DateTime";Expression = {(Get-Date)}}
     $selected+= @{Name="ComputerName";Expression={$session.ComputerName }}
-    Write-Verbose "PSBoundParameters"
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
 
 Process {
 
-Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
 
  if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
      #create a temporary cimsession if using a computername
      $MyCIMSession = foreach ($item in $Computername) {
      Try {
-        Write-Verbose "Creating temporary CIM Session to $item"
+        Write-Verbose "[PROCESS] Creating temporary CIM Session to $item"
         New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
-        Write-Verbose "Added session"
+        Write-Verbose "[PROCESS] Added session"
      }
      Catch {
         Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
@@ -384,7 +384,7 @@ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
     } #foreach item in computername
  } #if computername parameter set
  else {
-    Write-Verbose "Re-using CimSessions"
+    Write-Verbose "[PROCESS] Re-using CimSessions"
     $MyCimSession = $CimSession
  }
 
@@ -400,9 +400,9 @@ foreach ($session in $MyCIMSession) {
 
     #clean up
     if ($tmpSess) {
-        Write-Verbose "Removing temporary sessions"
+        Write-Verbose "[PROCESS] Removing temporary sessions"
         $tmpSess | Remove-CimSession
-        remove-Variable tmpsess
+        Remove-Variable tmpsess
     }
 
 } #process
@@ -436,8 +436,8 @@ Param(
 )
 
 Begin {
-    Write-Verbose "Starting: $($MyInvocation.Mycommand)"  
-    Write-Verbose "PSBoundParameters"
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
     
     #define a hash table to resolve Form factor
@@ -472,15 +472,15 @@ Begin {
 
 Process {
 
-Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
+Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
 
  if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
      #create a temporary cimsession if using a computername
      $MyCIMSession = foreach ($item in $Computername) {
      Try {
-        Write-Verbose "Creating temporary CIM Session to $item"
+        Write-Verbose "[PROCESS] Creating temporary CIM Session to $item"
         New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
-        Write-Verbose "Added session"
+        Write-Verbose "[PROCESS] Added session"
      }
      Catch {
         Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
@@ -488,14 +488,14 @@ Write-Verbose "Using parameter set $($PSCmdlet.ParameterSetName)"
     } #foreach item in computername
  } #if computername parameter set
  else {
-    Write-Verbose "Re-using CimSessions"
+    Write-Verbose "[PROCESS] Re-using CimSessions"
     $MyCimSession = $CimSession
  }
 
 foreach ($session in $MyCIMSession) {
-    Write-Verbose "Processing $($session.computername)"  
+    Write-Verbose "[PROCESS] Processing $($session.computername)"  
         Try {
-        Get-CimInstance win32_physicalmemory -cimsession $session | 
+        Get-CimInstance -classname win32_physicalmemory -cimsession $session | 
         Select @{Name="Computername";Expression={$_.PSComputername.ToUpper()}},
         Manufacturer,@{Name="CapacityGB";Expression={$_.Capacity/1GB}},
         @{Name="Form";Expression={$form.item($_.FormFactor -as [int])}},
@@ -503,14 +503,14 @@ foreach ($session in $MyCIMSession) {
         @{Name="Voltage";Expression={$_.ConfiguredVoltage}},DeviceLocator 
         } #Try
         Catch {
-         Write-Error "[$($Computer.toUpper())] $($_.exception.message)"
+         Write-Error "[$($Session.ComputerName.toUpper())] $($_.exception.message)"
         }
     } #foreach
     #clean up
     if ($tmpSess) {
-        Write-Verbose "Removing temporary sessions"
+        Write-Verbose "[PROCESS] Removing temporary sessions"
         $tmpSess | Remove-CimSession
-        remove-Variable tmpsess
+        Remove-Variable tmpsess
     }
 } #process
 
@@ -519,6 +519,101 @@ End {
 } #end
 
 } #get-PhysicalMemory
+
+Function Get-TopProcessMemory {
+
+[cmdletbinding(DefaultParameterSetName="ComputerNameSet")]
+Param(
+[Parameter(
+ Position = 0,
+ ValueFromPipeline,
+ ValueFromPipelineByPropertyName,
+ ParameterSetName='ComputernameSet'
+ )]
+[ValidateNotNullorEmpty()]
+[Alias("cn")]
+[string[]]$Computername = $env:Computername,
+
+[Parameter(
+ ParameterSetName='CimInstanceSessionSet', 
+ Mandatory, 
+ ValueFromPipeline
+ )]
+ [ValidateNotNullorEmpty()]
+[Microsoft.Management.Infrastructure.CimSession[]]$CimSession,
+
+[validateRange(1,25)]
+[int]$Top = 5
+)
+
+Begin {
+    Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
+    Write-Verbose "[BEGIN  ] PSBoundParameters"
+    Write-Verbose ($PSBoundParameters | Out-String)
+    
+}
+Process {
+
+Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
+
+ if ($pscmdlet.ParameterSetName -eq 'ComputerNameSet') {
+     #create a temporary cimsession if using a computername
+     $MyCIMSession = foreach ($item in $Computername) {
+     Try {
+        Write-Verbose "[PROCESS] Creating temporary CIM Session to $item"
+        New-CimSession -ComputerName $item -ErrorAction Stop -OutVariable +tmpSess
+        Write-Verbose "[PROCESS] Added session"
+     }
+     Catch {
+        Write-Error "[$($item.toUpper())] Failed to create temporary CIM Session. $($_.exception.message)"
+     }
+    } #foreach item in computername
+ } #if computername parameter set
+ else {
+    Write-Verbose "[PROCESS] Re-using CimSessions"
+    $MyCimSession = $CimSession
+ }
+
+foreach ($session in $MyCIMSession) {
+
+    Try {
+        Write-Verbose "[PROCESS] Querying $($session.computername.ToUpper())"
+        Get-CimInstance -classname win32_process -CimSession $session -PipelineVariable pv | 
+        sort WorkingSetSize -Descending |
+        Select -first $Top -Property @{Name="Computername";Expression={$_.PSComputername}},
+        ProcessID,Name,
+        @{Name="WS(MB)";Expression={$_.WorkingSetSize/1MB}},
+        @{Name="PctUsed";Expression={
+
+         $os = Get-ciminstance win32_operatingsystem -ComputerName $pv.pscomputername
+         $used = $os.TotalVisibleMemorySize - $os.FreePhysicalMemory
+
+         [math]::Round(($_.workingsetsize/($used*1KB))*100,2)}},
+        CreationDate,@{Name="RunTime";Expression={(Get-Date) - $_.CreationDate}},
+        Commandline,
+        @{Name="Owner";Expression={
+         $own = $pv | Invoke-CimMethod -MethodName GetOwner
+         "$($own.domain)\$($own.user)"
+        }}
+    } #Try
+    Catch {
+        Write-Error "[$($Session.Computername.toUpper())] $($_.exception.message)"
+    } #Catch
+
+  } #foreach
+    #clean up
+    if ($tmpSess) {
+        Write-Verbose "[PROCESS] Removing temporary sessions"
+        $tmpSess | Remove-CimSession
+        Remove-Variable tmpsess
+    }
+} #process
+
+End {
+    Write-Verbose "[END    ] Ending: $($MyInvocation.Mycommand)"
+} #end
+} #end function
+
 
 #endregion
 

@@ -21,10 +21,10 @@ Describe "Module" {
 
     $mod = Get-Module MemoryTools
     It "Should have an 5 functions" {
-       $mod.ExportedFunctions.count | Should Be 5
+       $mod.ExportedFunctions.count | Should Be 6
     }
     It "Should have 5 aliases" {
-       $mod.ExportedAliases.count | Should Be 5
+       $mod.ExportedAliases.count | Should Be 6
     }
     It "Should have Format ps1xml files" {
         $mod.ExportedFormatFiles.count | Should BeGreaterThan 0
@@ -108,7 +108,7 @@ Describe "Get-MemoryUsage" -Tags Functions {
 
  }
  
- Describe "Test-MemoryUsage" -Tags Functions {       
+Describe "Test-MemoryUsage" -Tags Functions {       
  
      Mock Get-CimInstance {
         $data = [pscustomobject]@{
@@ -279,5 +279,52 @@ Describe "Get-PhysicalMemory" -Tags Functions {
     $testSessions | Remove-CimSession
 
  } 
+
+Describe "Get-TopProcessMemory" -Tags Functions {
+        It "Should run without error" {
+         {Get-TopProcessMemory -errorAction Stop} | Should Not Throw
+        }
+
+        $r = Get-TopProcessMemory -computername $env:computername
+        
+        It "Should return 5 objects by default" {
+         $r.count | should be 5
+        }
+
+        It "Should have an owner value" {
+            ($r.owner | Measure-Object).Count | Should begreaterThan 0
+        }
+
+        It "Should have a computername property" {
+            $r[0].computername | Should be $env:computername
+        }
+
+        It "Should have a CreationDate property that is a [datetime]" {
+            $r[0].CreationDate.GetType().Name | Should be "datetime"
+        }
+
+        It "Should return a specified number of processes" {
+          (Get-TopProcessMemory -Top 7).Count | Should Be 7
+        }
+        It "Should accept multiple computernames" {
+          $t = Get-TopProcessMemory -Computername $env:computername,$env:computername
+          $t.count | Should Be 10
+        }
+
+        It "Should accept input by pipeline" {
+            ($env:computername,$env:computername | Get-TopProcessMemory).Count | Should Be 10
+        }
+
+        It "Should accept input by property name via the pipeline" {
+            
+            ($computerobject| Get-TopProcessMemory).Count | Should Be 5
+        }
+
+        It "Should accept CIMSessions via the pipeline" {
+          ($testSessions | Get-TopProcessMemory).count | Should be 10
+
+        }
+
+ }
 
 } #in module

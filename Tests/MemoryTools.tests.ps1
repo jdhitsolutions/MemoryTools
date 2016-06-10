@@ -274,10 +274,6 @@ Describe "Get-PhysicalMemory" -Tags Functions {
        It "Should error with a bad computername" {
         { Get-PhysicalMemory -Computername 'F00' -ErrorAction stop } | Should Throw
     }
-
-    #clean up
-    $testSessions | Remove-CimSession
-
  } 
 
 Describe "Get-TopProcessMemory" -Tags Functions {
@@ -316,15 +312,16 @@ Describe "Get-TopProcessMemory" -Tags Functions {
         }
 
         It "Should accept input by property name via the pipeline" {
-            
             ($computerobject| Get-TopProcessMemory).Count | Should Be 5
         }
 
         It "Should accept CIMSessions via the pipeline" {
           ($testSessions | Get-TopProcessMemory).count | Should be 10
-
         }
 
  }
+
+    #clean up
+    $testSessions | Remove-CimSession
 
 } #in module

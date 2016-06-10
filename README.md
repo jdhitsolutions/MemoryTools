@@ -116,6 +116,63 @@ This command will query the Win32_PhysicalMemory class to get hardware details.
     Voltage       : 1200
     DeviceLocator : ChannelB-DIMM1
 
+## Get-TopProcessMemory ##
+This command will use Get-CimInstance to retrieve the top processes by Workingset. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
+
+    PS C:\> Get-TopProcessMemory -Computername chi-p50
+
+    Computername : chi-p50
+    ProcessID    : 3128
+    Name         : dns.exe
+    WS(MB)       : 450.78125
+    PctUsed      : 2.28
+    CreationDate : 5/21/2016 10:50:39 AM
+    RunTime      : 17.00:21:09.9646185
+    Commandline  : C:\WINDOWS\system32\dns.exe
+    Owner        : NT AUTHORITY\NETWORK SERVICE
+
+    Computername : chi-p50
+    ProcessID    : 3104
+    Name         : MsMpEng.exe
+    WS(MB)       : 137.33984375
+    PctUsed      : 0.69
+    CreationDate : 5/21/2016 10:50:39 AM
+    RunTime      : 17.00:21:10.0191119
+    Commandline  : 
+    Owner        : NT AUTHORITY\NETWORK SERVICE
+
+    Computername : chi-p50
+    ProcessID    : 7180
+    Name         : ServerManager.exe
+    WS(MB)       : 90.6328125
+    PctUsed      : 0.46
+    CreationDate : 5/21/2016 10:51:07 AM
+    RunTime      : 17.00:20:42.2754743
+    Commandline  : "C:\WINDOWS\system32\ServerManager.exe" 
+    Owner        : NT AUTHORITY\NETWORK SERVICE
+
+    Computername : chi-p50
+    ProcessID    : 7568
+    Name         : Lenovo.Modern.ImController.exe
+    WS(MB)       : 81.3359375
+    PctUsed      : 0.41
+    CreationDate : 5/21/2016 11:03:01 AM
+    RunTime      : 17.00:08:47.9026653
+    Commandline  : "C:\Program 
+                   Files\Lenovo\ImController\Service\Lenovo.Modern.ImController.exe"
+    Owner        : NT AUTHORITY\NETWORK SERVICE
+
+    Computername : chi-p50
+    ProcessID    : 7980
+    Name         : MicrosoftEdgeCP.exe
+    WS(MB)       : 78.5390625
+    PctUsed      : 0.4
+    CreationDate : 5/22/2016 8:06:35 PM
+    RunTime      : 15.15:05:14.5392500
+    Commandline  : "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\micr
+                   osoftedgecp.exe" SCODEF:7004 CREDAT:140564 /prefetch:2
+    Owner        : NT AUTHORITY\NETWORK SERVICE
+
 
 ****************************************************************
 DO NOT USE IN A PRODUCTION ENVIRONMENT UNTIL YOU HAVE TESTED 

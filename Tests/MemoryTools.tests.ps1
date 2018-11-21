@@ -2,7 +2,7 @@
 
 #Show-MemoryUsage can't be tested because it doesn't write anything to the pipeline
 
-Import-Module ..\MemoryTools
+Import-Module ..\MemoryTools -force
 
 inModuleScope MemoryTools {
 

@@ -1,73 +1,86 @@
-# MemoryTools #
+# MemoryTools
 
-This module contains a set of PowerShell functions for reporting on computer
-memory utilization and configuration. The commands use Get-CimInstance so
-remote computers must be running PowerShell 3.0 or later.
+This module contains a set of PowerShell functions for reporting on computer memory utilization and configuration. The commands use `Get-CimInstance` so remote computers must be running PowerShell 3.0 or later.
 
-The project is described on my blog at http://bit.ly/1Tooj3Q
+The project was first described on my blog at http://bit.ly/1Tooj3Q
 
-## Get-MemoryUsage ##
-This command will write a custom memory utilization object to the pipeline
-that indicates the current memory state.
+Install the latest version of this module from the PowerShell Gallery.
+
+```powershell
+Install-Module MemoryTools
+```
+
+## Get-MemoryUsage
+
+This command will write a custom memory utilization object to the pipeline that indicates the current memory state.
 
     Computername Status PctFree FreeGB TotalGB
     ------------ ------ ------- ------ -------
     CHI-P50      OK       71.99  45.98      64
 
-## Show-MemoryUsage ##
-This command will also get the same information as Get-MemoryUsage but will
-display it with colorized output.
+## Show-MemoryUsage 
 
-![Alt Colorized Memory Usage](http://jdhitsolutions.com/blog/wp-content/uploads/2016/05/show-memoryusage.png "Show-MemoryUsage")
+This command will also get the same information as Get-MemoryUsage but will display it with colorized output.
 
-## Test-MemoryUsage ##
-This command can be used to test if memory utilization meets some criteria.
-There are several parameter sets for the different tests. All of them can
-be used with -Quiet to return a simple Boolean value.
+![Alt Colorized Memory Usage](./assets/show-memoryusage.png)
 
-### Percent Free ###
-The default behavior is to see is there is at least 50% free memory, but you
-can specify a different value.
+## Test-MemoryUsage
 
+This command can be used to test if memory utilization meets some criteria. There are several parameter sets for the different tests. All of them can be used with -Quiet to return a simple Boolean value.
+
+### Percent Free
+
+The default behavior is to see is there is at least 50% free memory, but you can specify a different value.
+
+```powershell
     PS C:\> Test-MemoryUsage
 
     Computername PctFree  Test
     ------------ -------  ----
-    WIN81-ENT-01   19.17 False
+    Win10-ENT-01   19.17 False
+```
 
-### FreeGB ###
+### FreeGB
+
 Test if there is at least X amount of free memory available.
 
+```powershell
     PS C:\> Test-MemoryUsage -FreeGB 2
 
     Computername FreeGB  Test
     ------------ ------  ----
-    WIN81-ENT-01   1.45 False
+    Win10-ENT-01   1.45 False
+```
 
+### TotalGB
 
-### TotalGB ###
 Test if the computer has at least X amount of total memory.
 
+```powershell
     PS C:\> Test-MemoryUsage -TotalGB 8
 
     Computername TotalGB Test
     ------------ ------- ----
-    WIN81-ENT-01       8 True
+    Win10-ENT-01       8 True
+```
 
-### UsedGB ###
+## UsedGB
+
 Test if the computer is using X amount of memory or greater.
 
-
+```powershell
     PS C:\> Test-memoryusage -UsedGB 4
 
     Computername UsedGB Test
     ------------ ------ ----
-    WIN81-ENT-01   6.51 True
+    Win10-ENT-01   6.51 True
+```
 
+## Get-MemoryPerformance
 
-## Get-MemoryPerformance ##
 This command will query memory performance counters.
 
+```powershell
     PS C:\> Get-MemoryPerformance -Computername $c | Select Computername,%CommittedBytes*,AvailableMBytes,CacheBytes
 
     Computername %CommittedBytesInUse AvailableMbytes CacheBytes
@@ -76,11 +89,14 @@ This command will query memory performance counters.
     CHI-HVR2         16.8986961377323           13144   83001344
     CHI-P50           24.753204334977           47143   94998528
     CHI-DC04         47.8621563768474            1030  180101120
-    WIN81-ENT-01      79.914213523203            1545   96137216
+    Win10-ENT-01      79.914213523203            1545   96137216
+```
 
-## Get-PhysicalMemory ##
+## Get-PhysicalMemory
+
 This command will query the Win32_PhysicalMemory class to get hardware details.
 
+```powershell
     PS C:\> get-physicalmemory -Computername chi-p50
 
 
@@ -115,10 +131,13 @@ This command will query the Win32_PhysicalMemory class to get hardware details.
     ClockSpeed    : 2133
     Voltage       : 1200
     DeviceLocator : ChannelB-DIMM1
+```
 
-## Get-TopProcessMemory ##
-This command will use Get-CimInstance to retrieve the top processes by Workingset. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
+## Get-TopProcessMemory
 
+This command will use `Get-CimInstance` to retrieve the top processes by Workingset. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
+
+```powershell
     PS C:\> Get-TopProcessMemory -Computername chi-p50
 
     Computername : chi-p50
@@ -126,7 +145,7 @@ This command will use Get-CimInstance to retrieve the top processes by Workingse
     Name         : dns.exe
     WS(MB)       : 450.78125
     PctUsed      : 2.28
-    CreationDate : 5/21/2016 10:50:39 AM
+    CreationDate : 5/21/2018 10:50:39 AM
     RunTime      : 17.00:21:09.9646185
     Commandline  : C:\WINDOWS\system32\dns.exe
     Owner        : NT AUTHORITY\NETWORK SERVICE
@@ -136,7 +155,7 @@ This command will use Get-CimInstance to retrieve the top processes by Workingse
     Name         : MsMpEng.exe
     WS(MB)       : 137.33984375
     PctUsed      : 0.69
-    CreationDate : 5/21/2016 10:50:39 AM
+    CreationDate : 5/21/2018 10:50:39 AM
     RunTime      : 17.00:21:10.0191119
     Commandline  : 
     Owner        : NT AUTHORITY\NETWORK SERVICE
@@ -146,7 +165,7 @@ This command will use Get-CimInstance to retrieve the top processes by Workingse
     Name         : ServerManager.exe
     WS(MB)       : 90.6328125
     PctUsed      : 0.46
-    CreationDate : 5/21/2016 10:51:07 AM
+    CreationDate : 5/21/2018 10:51:07 AM
     RunTime      : 17.00:20:42.2754743
     Commandline  : "C:\WINDOWS\system32\ServerManager.exe" 
     Owner        : NT AUTHORITY\NETWORK SERVICE
@@ -156,10 +175,9 @@ This command will use Get-CimInstance to retrieve the top processes by Workingse
     Name         : Lenovo.Modern.ImController.exe
     WS(MB)       : 81.3359375
     PctUsed      : 0.41
-    CreationDate : 5/21/2016 11:03:01 AM
+    CreationDate : 5/21/2018 11:03:01 AM
     RunTime      : 17.00:08:47.9026653
-    Commandline  : "C:\Program 
-                   Files\Lenovo\ImController\Service\Lenovo.Modern.ImController.exe"
+    Commandline  : "C:\Program Files\Lenovo\ImController\Service\Lenovo.Modern.ImController.exe"
     Owner        : NT AUTHORITY\NETWORK SERVICE
 
     Computername : chi-p50
@@ -167,16 +185,10 @@ This command will use Get-CimInstance to retrieve the top processes by Workingse
     Name         : MicrosoftEdgeCP.exe
     WS(MB)       : 78.5390625
     PctUsed      : 0.4
-    CreationDate : 5/22/2016 8:06:35 PM
+    CreationDate : 5/22/2018 8:06:35 PM
     RunTime      : 15.15:05:14.5392500
-    Commandline  : "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\micr
-                   osoftedgecp.exe" SCODEF:7004 CREDAT:140564 /prefetch:2
+    Commandline  : "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\microsoftedgecp.exe" SCODEF:7004 REDAT:140564 /prefetch:2
     Owner        : NT AUTHORITY\NETWORK SERVICE
+```
 
-
-****************************************************************
-DO NOT USE IN A PRODUCTION ENVIRONMENT UNTIL YOU HAVE TESTED 
-THOROUGHLY IN A LAB ENVIRONMENT. USE AT YOUR OWN RISK. IF YOU DO 
-NOT UNDERSTAND WHAT THIS SCRIPT DOES OR HOW IT WORKS, DO NOT USE
-OUTSIDE OF A SECURE, TEST SETTING.      
-****************************************************************
+_Last updated 21 November 2018_

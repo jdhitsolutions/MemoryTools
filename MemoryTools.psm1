@@ -54,7 +54,7 @@ Process {
  }
 
 foreach ($session in $MyCIMSession) {
- 
+
     Write-Verbose "[PROCESS] Processing $($session.computername)"  
 
     Try {
@@ -64,8 +64,21 @@ foreach ($session in $MyCIMSession) {
         Write-Error "[$($session.Computername.toUpper())] Failed to retrieve data. $($_.exception.message)"
     }
     if ($os) {
-        $pctFree = [math]::Round(($os.FreePhysicalMemory/$os.TotalVisibleMemorySize)*100,2)
-    
+        # Determine if Dynamic Memory is used
+        $MaxDynamicMemory = (Get-Counter -Counter "\Hyper-V Dynamic Memory Integration Service\Maximum Memory, Mbytes" -ComputerName $os.PSComputerName -ErrorAction SilentlyContinue).CounterSamples.CookedValue * 1KB
+
+        # Determine the amount of free memory
+        if ($MaxDynamicMemory) {
+            $FreeMemory = $os.FreePhysicalMemory+($MaxDynamicMemory-$os.TotalVisibleMemorySize)
+            $TotalMemory = $MaxDynamicMemory
+        }
+        else {
+            $FreeMemory = $os.FreePhysicalMemory
+            $TotalMemory = $os.TotalVisibleMemorySize
+        }
+
+        $pctFree = [math]::Round(($FreeMemory/$TotalMemory)*100,2)
+
         if ($pctFree -ge $MemoryToolsOK) {
             $StatusProperty = "OK"
         }
@@ -80,8 +93,8 @@ foreach ($session in $MyCIMSession) {
         $obj = $os | Select @{Name="Computername";Expression={ $_.PSComputername.toUpper()}},
         @{Name = "Status";Expression = {$StatusProperty}},
         @{Name = "PctFree"; Expression =  {$pctFree}},
-        @{Name = "FreeGB";Expression = {[math]::Round($_.FreePhysicalMemory/1mb,2)}},
-        @{Name = "TotalGB";Expression = {[int]($_.TotalVisibleMemorySize/1mb)}} 
+        @{Name = "FreeGB";Expression = {[math]::Round($FreeMemory/1mb,2)}},
+        @{Name = "TotalGB";Expression = {[int]($TotalMemory/1mb)}}
 
         #add a custom type name
         $obj.psobject.typenames.insert(0,"MyMemoryUsage")
@@ -98,7 +111,7 @@ foreach ($session in $MyCIMSession) {
         Clear-Variable OS,obj,Mycimsession
 
     } #if OS
-       
+
 } #foreach
 
  #clean up
@@ -109,7 +122,7 @@ foreach ($session in $MyCIMSession) {
     }
 } #process
 
-End {    
+End {
     Write-Verbose "[END    ] $($MyInvocation.Mycommand)"
 } #end
 
@@ -190,7 +203,7 @@ End {
         #write the line with the corresponding alert color
         Write-Host $_ -ForegroundColor $color
    } #foreach string
-    #write an extra blank line 
+    #write an extra blank line
     write-Host "`n"
     Write-Verbose "[END    ] $($MyInvocation.Mycommand)"
 } #end
@@ -241,7 +254,7 @@ Param(
 
 Begin {
     Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
-   
+
     Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
 } #begin
@@ -261,10 +274,10 @@ else {
     }
 }
 
-Foreach ($mem in $usage) {    
-    
+Foreach ($mem in $usage) {
+
         Switch -regex ($PSCmdlet.ParameterSetName) {
-        "Used"  {  
+        "Used"  {
                 Write-Verbose "[PROCESS] Testing if Used GB is >= to $UsedGB" 
                     $used = $mem.TotalGB - $mem.FreeGB
                     Write-Verbose "[PROCESS] Used = $used"
@@ -308,7 +321,7 @@ Foreach ($mem in $usage) {
                     $data = $mem | Select Computername,PctFree,@{Name="Test";Expression={$test}}
                     }
         } #switch
-            
+
         if ($Quiet) {
             $Test
         }
@@ -339,8 +352,8 @@ Param(
 [string[]]$Computername = $env:Computername,
 
 [Parameter(
- ParameterSetName='CimInstanceSessionSet', 
- Mandatory, 
+ ParameterSetName='CimInstanceSessionSet',
+ Mandatory,
  ValueFromPipeline
  )]
  [ValidateNotNullorEmpty()]
@@ -350,12 +363,12 @@ Param(
 Begin {
     Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
     <#
-        Get all memory performance counters. Assuming counters on the 
+        Get all memory performance counters. Assuming counters on the
         client are the same as on the server. Sort by name.
     #>
     $all = (Get-Counter -ListSet Memory*).counter | Sort-Object
-    
-    #get a list of class properties. Some of the properties don't 
+
+    #get a list of class properties. Some of the properties don't
     #appear to have any values and are different than what you get
     #with Get-Counter
     $perfclass = Get-CimClass -classname Win32_PerfFormattedData_PerfOS_Memory
@@ -390,7 +403,7 @@ Write-Verbose "[PROCESS] Using parameter set $($PSCmdlet.ParameterSetName)"
 
 foreach ($session in $MyCIMSession) {
        Try {
-        Get-CimInstance -classname Win32_PerfFormattedData_PerfOS_Memory -CimSession $session | 
+        Get-CimInstance -classname Win32_PerfFormattedData_PerfOS_Memory -CimSession $session |
         Select-Object -property $selected
         } #try
         Catch {
@@ -427,8 +440,8 @@ Param(
 [string[]]$Computername = $env:Computername,
 
 [Parameter(
- ParameterSetName='CimInstanceSessionSet', 
- Mandatory, 
+ ParameterSetName='CimInstanceSessionSet',
+ Mandatory,
  ValueFromPipeline
  )]
  [ValidateNotNullorEmpty()]
@@ -439,7 +452,7 @@ Begin {
     Write-Verbose "[BEGIN  ] Starting: $($MyInvocation.Mycommand)"  
     Write-Verbose "[BEGIN  ] PSBoundParameters"
     Write-Verbose ($PSBoundParameters | Out-String)
-    
+
     #define a hash table to resolve Form factor
     $form = @{
     0 = 'Unknown'
@@ -500,7 +513,7 @@ foreach ($session in $MyCIMSession) {
         Manufacturer,@{Name="CapacityGB";Expression={$_.Capacity/1GB}},
         @{Name="Form";Expression={$form.item($_.FormFactor -as [int])}},
         @{Name="ClockSpeed";Expression={$_.ConfiguredClockSpeed}},
-        @{Name="Voltage";Expression={$_.ConfiguredVoltage}},DeviceLocator 
+        @{Name="Voltage";Expression={$_.ConfiguredVoltage}},DeviceLocator
         } #Try
         Catch {
          Write-Error "[$($Session.ComputerName.toUpper())] $($_.exception.message)"

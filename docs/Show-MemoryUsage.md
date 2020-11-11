@@ -1,7 +1,7 @@
 ---
 external help file: MemoryTools-help.xml
 Module Name: MemoryTools
-online version:
+online version: https://bit.ly/2Tp7IWy
 schema: 2.0.0
 ---
 
@@ -13,13 +13,13 @@ Display a colorized version of memory usage.
 
 ## SYNTAX
 
-### ComputernameSet (Default)
+### Computername (Default)
 
 ```yaml
 Show-MemoryUsage [[-Computername] <String[]>] [<CommonParameters>]
 ```
 
-### CimInstanceSessionSet
+### Cim
 
 ```yaml
 Show-MemoryUsage -CimSession <CimSession[]> [<CommonParameters>]
@@ -27,25 +27,25 @@ Show-MemoryUsage -CimSession <CimSession[]> [<CommonParameters>]
 
 ## DESCRIPTION
 
-This is a variation of the Get-MemoryUsage command. This version writes to the console using Write-Host and colorizes the output. Normal values will be displayed in green. Warnings will be displayed in yellow and Critical systems in red.
+This is a variation of the Get-MemoryUsage command. This version displays a colorized and formatted table using a custom view. Normal values will be displayed in green. Warnings will be displayed in yellow and Critical systems in red. The criteria for what is normal or not is based on the $MemoryToolsOK and $MemoryToolsWarning global variable values. You can modify these values from the console.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS S:\MemoryTools> show-memoryusage -Computername Dom1,Srv1,Srv2,Win10
+PS C:\> show-memoryusage -Computername Dom1,Srv1,Srv2,Win10
 
 ****************
-* Memory Check *
+  Memory Check
 ****************
 
-Computername Status  PctFree  FreeGB TotalGB
------------- ------  -------  ------ -------
-DOM1         OK        99.92  1023.2    1024
-SRV1         OK        99.96 1023.63    1024
-SRV2         OK        99.95 1023.51    1024
-WIN10        Warning   36.89    1.19       3
+Computername     Status    PctFree   FreeGB  TotalGB
+------------     ------    -------   ------  -------
+DOM1             OK          99.92   1023.2     1024
+SRV1             OK          99.96  1023.63     1024
+SRV2             OK          99.95  1023.51     1024
+WIN10            Warning     36.89     1.19        3
 ```
 
 The line for Win10 would be displayed in Yellow. The other computers would be displayed in Green.
@@ -97,7 +97,7 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### None. This command writes to the console.
+### This command creates a formatted table
 
 ## NOTES
 
@@ -105,4 +105,4 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 
 ## RELATED LINKS
 
-[Get-MemoryUsage](./Get-MemoryUsage.md)
+[Get-MemoryUsage](Get-MemoryUsage.md)

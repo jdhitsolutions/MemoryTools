@@ -1,7 +1,7 @@
 ---
 external help file: MemoryTools-help.xml
 Module Name: MemoryTools
-online version:
+online version: https://bit.ly/2TpnLDV
 schema: 2.0.0
 ---
 
@@ -13,13 +13,13 @@ Get a snapshot of memory usage.
 
 ## SYNTAX
 
-### ComputernameSet (Default)
+### Computername (Default)
 
 ```yaml
 Get-MemoryUsage [[-Computername] <String[]>] [-Status <String>] [<CommonParameters>]
 ```
 
-### CimInstanceSessionSet
+### Cim
 
 ```yaml
 Get-MemoryUsage [-Status <String>] -CimSession <CimSession[]> [<CommonParameters>]
@@ -27,18 +27,18 @@ Get-MemoryUsage [-Status <String>] -CimSession <CimSession[]> [<CommonParameters
 
 ## DESCRIPTION
 
-This command will write a custom memory utilization object to the pipeline that indicates the current memory state.
+This command will write a custom memory utilization object to the pipeline that indicates the current memory state. The criteria for what is normal or not is based on the $MemoryToolsOK and $MemoryToolsWarning global variable values. You can modify these values from the console.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> Get-MemoryUsage -computername chi-p50
+PS C:\> Get-MemoryUsage -computername Thinkp1
 
- Computername Status PctFree FreeGB TotalGB
-    ------------ ------ ------- ------ -------
-    CHI-P50      OK       71.99  45.98      64
+Computername     Status  PctFree   FreeGB  TotalGB
+------------     ------  -------   ------  -------
+THINKP1          OK        83.66    26.39       32
 ```
 
 ### Example 2
@@ -46,9 +46,9 @@ PS C:\> Get-MemoryUsage -computername chi-p50
 ```powershell
 PS C:\> Get-MemoryUsage dom1,srv1,srv2,win10 -Status Warning
 
-Computername Status  PctFree FreeGB TotalGB
------------- ------  ------- ------ -------
-WIN10        Warning   36.57   1.17       3
+Computername    Status  PctFree   FreeGB   TotalGB
+------------    ------  -------   ------   -------
+WIN10           Warning   36.57     1.17         3
 ```
 
 Get usage from several computers but filter and only display those with a Warning.
@@ -99,7 +99,7 @@ Accepted values: All, OK, Warning, Critical
 
 Required: False
 Position: Named
-Default value: None
+Default value: All
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -117,7 +117,7 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Object
+### MyMemoryUsage
 
 ## NOTES
 
@@ -125,8 +125,8 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 
 ## RELATED LINKS
 
-[Show-MemoryUsage](./Show-MemoryUsage.md)
+[Show-MemoryUsage](Show-MemoryUsage.md)
 
-[Test-MemoryUsage](./Test-MemoryUsage.md)
+[Test-MemoryUsage](Test-MemoryUsage.md)
 
-[Get-TopProcessMemory](./Get-TopProcessMemory.md)
+[Get-TopProcessMemory](Get-TopProcessMemory.md)

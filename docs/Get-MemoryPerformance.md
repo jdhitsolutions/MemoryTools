@@ -1,7 +1,7 @@
 ---
 external help file: MemoryTools-help.xml
 Module Name: MemoryTools
-online version:
+online version: https://bit.ly/2TrAq9d
 schema: 2.0.0
 ---
 
@@ -13,13 +13,13 @@ Get memory information from performance counters
 
 ## SYNTAX
 
-### ComputernameSet
+### Computername
 
 ```yaml
 Get-MemoryPerformance [[-Computername] <String[]>] [<CommonParameters>]
 ```
 
-### CimInstanceSessionSet
+### Cim
 
 ```yaml
 Get-MemoryPerformance -CimSession <CimSession[]> [<CommonParameters>]
@@ -27,7 +27,7 @@ Get-MemoryPerformance -CimSession <CimSession[]> [<CommonParameters>]
 
 ## DESCRIPTION
 
-Use this command to simplify the process of getting data from memory related performance counters.
+Use this command to simplify the process of getting data from memory-related performance counters.
 
 ## EXAMPLES
 
@@ -74,8 +74,8 @@ SystemDriverTotalBytes               : 29093888
 TransitionFaultsPersec               : 83
 TransitionPagesRePurposedPersec      : 0
 WriteCopiesPersec                    : 0
-DateTime                             : 11/21/2018 12:17:16 PM
-ComputerName                         : BOVINE320
+DateTime                             : 11/21/2020 12:17:16 PM
+ComputerName                         : WIN10Desktop
 ```
 
 Get all memory counters for the local computer.
@@ -153,4 +153,4 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 
 [Get-Counter]()
 
-[Get-MemoryUsage](./Get-MemoryUsage.md)
+[Get-MemoryUsage](Get-MemoryUsage.md)

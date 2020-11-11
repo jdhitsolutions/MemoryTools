@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <ViewDefinitions>
+        <View>
+            <Name>default</Name>
+            <ViewSelectedBy>
+                <TypeName>MyMemoryUsage</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>Computername</Label>
+                        <Width>16</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Status</Label>
+                        <Width>8</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>PctFree</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>FreeGB</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>TotalGB</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>Computername</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Status</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>PctFree</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>FreeGB</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>TotalGB</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>show</Name>
+            <ViewSelectedBy>
+                <TypeName>MyMemoryUsage</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>Computername</Label>
+                        <Width>16</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Status</Label>
+                        <Width>8</Width>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>PctFree</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>FreeGB</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>TotalGB</Label>
+                        <Width>8</Width>
+                        <Alignment>Right</Alignment>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                Switch ($_.Status) {
+                                    "OK" { $color = "$([char]0x1b)[38;5;47m" }
+                                    "Warning" { $color = "$([char]0x1b)[38;5;227m" }
+                                    "Critical" { $color = "$([char]0x1b)[38;5;198m"  }
+                                }
+                                "$color$($_.Computername)$([char]0x1b)[0m"
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                               <ScriptBlock>
+                                Switch ($_.Status) {
+                                    "OK" { $color = "$([char]0x1b)[38;5;47m" }
+                                    "Warning" { $color = "$([char]0x1b)[38;5;227m" }
+                                    "Critical" { $color = "$([char]0x1b)[38;5;198m"  }
+                                }
+                                "$color$($_.Status)$([char]0x1b)[0m"
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                               <ScriptBlock>
+                                Switch ($_.Status) {
+                                    "OK" { $color = "$([char]0x1b)[38;5;47m" }
+                                    "Warning" { $color = "$([char]0x1b)[38;5;227m" }
+                                    "Critical" { $color = "$([char]0x1b)[38;5;198m"  }
+                                }
+                                "$color$($_.PctFree)$([char]0x1b)[0m"
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                               <ScriptBlock>
+                                Switch ($_.Status) {
+                                    "OK" { $color = "$([char]0x1b)[38;5;47m" }
+                                    "Warning" { $color = "$([char]0x1b)[38;5;227m" }
+                                    "Critical" { $color = "$([char]0x1b)[38;5;198m"  }
+                                }
+                                "$color$($_.FreeGB)$([char]0x1b)[0m"
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                Switch ($_.Status) {
+                                    "OK" { $color = "$([char]0x1b)[38;5;47m" }
+                                    "Warning" { $color = "$([char]0x1b)[38;5;227m" }
+                                    "Critical" { $color = "$([char]0x1b)[38;5;198m"  }
+                                }
+                                "$color$($_.TotalGB)$([char]0x1b)[0m"
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>

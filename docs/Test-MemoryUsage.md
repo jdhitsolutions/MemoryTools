@@ -1,7 +1,7 @@
 ---
 external help file: MemoryTools-help.xml
 Module Name: MemoryTools
-online version:
+online version: https://bit.ly/2TFkXml
 schema: 2.0.0
 ---
 
@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Test if a computer meets a specific memory threshhold.
+Test if a computer meets a specific memory threshold.
 
 ## SYNTAX
 
@@ -63,26 +63,26 @@ Test-MemoryUsage -CimSession <CimSession[]> [-PercentFree <Int32>] [-Quiet] [<Co
 
 ## DESCRIPTION
 
-This command can be used to test if memory utilization meets some criteria. There are several parameter sets for the different tests. All of them can be used with -Quiet to return a simple Boolean value.
+This command can be used to test if memory utilization meets some criteria. There are several parameter sets for different tests. All of them can be used with -Quiet to return a simple Boolean value.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> test-memoryusage
+PS C:\> Test-MemoryUsage
 
 Computername PctFree Test
 ------------ ------- ----
 BOVINE320      50.53 True
 ```
 
-Run the default test on the local computer. The default percentage threshhold is 50%.
+Run the default test on the local computer. The default percentage threshold is 50%.
 
 ### Example 2
 
 ```powershell
-PS C:\> test-memoryusage -FreeGB 16
+PS C:\> Test-MemoryUsage -FreeGB 16
 
 Computername FreeGB  Test
 ------------ ------  ----
@@ -245,8 +245,8 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 
 ## RELATED LINKS
 
-[Get-MemoryUsage](./Get-MemoryUsage.md)
+[Get-MemoryUsage](Get-MemoryUsage.md)
 
-[Get-MemoryPerformance](./Get-MemoryPerformance.md)
+[Get-MemoryPerformance](Get-MemoryPerformance.md)
 
-[Get-TopProcessMemory](./Get-TopProcessMemory.md)
+[Get-TopProcessMemory](Get-TopProcessMemory.md)

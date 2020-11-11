@@ -10,7 +10,7 @@
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>Use this command to simplify the process of getting data from memory related performance counters.</maml:para>
+      <maml:para>Use this command to simplify the process of getting data from memory-related performance counters.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -146,8 +146,8 @@ SystemDriverTotalBytes               : 29093888
 TransitionFaultsPersec               : 83
 TransitionPagesRePurposedPersec      : 0
 WriteCopiesPersec                    : 0
-DateTime                             : 11/21/2018 12:17:16 PM
-ComputerName                         : BOVINE320</dev:code>
+DateTime                             : 11/21/2020 12:17:16 PM
+ComputerName                         : WIN10Desktop</dev:code>
         <dev:remarks>
           <maml:para>Get all memory counters for the local computer.</maml:para>
         </dev:remarks>
@@ -170,6 +170,10 @@ ComputerName                         : BOVINE320</dev:code>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/2TrAq9d</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
         <maml:linkText>Get-Counter</maml:linkText>
         <maml:uri></maml:uri>
       </maml:navigationLink>
@@ -189,7 +193,7 @@ ComputerName                         : BOVINE320</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command will write a custom memory utilization object to the pipeline that indicates the current memory state.</maml:para>
+      <maml:para>This command will write a custom memory utilization object to the pipeline that indicates the current memory state. The criteria for what is normal or not is based on the $MemoryToolsOK and $MemoryToolsWarning global variable values. You can modify these values from the console.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -222,7 +226,7 @@ ComputerName                         : BOVINE320</dev:code>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
       <command:syntaxItem>
@@ -255,7 +259,7 @@ ComputerName                         : BOVINE320</dev:code>
             <maml:name>String</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
+          <dev:defaultValue>All</dev:defaultValue>
         </command:parameter>
       </command:syntaxItem>
     </command:syntax>
@@ -294,7 +298,7 @@ ComputerName                         : BOVINE320</dev:code>
           <maml:name>String</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
+        <dev:defaultValue>All</dev:defaultValue>
       </command:parameter>
     </command:parameters>
     <command:inputTypes>
@@ -318,7 +322,7 @@ ComputerName                         : BOVINE320</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>MyMemoryUsage</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -333,11 +337,11 @@ ComputerName                         : BOVINE320</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-MemoryUsage -computername chi-p50
+        <dev:code>PS C:\&gt; Get-MemoryUsage -computername Thinkp1
 
- Computername Status PctFree FreeGB TotalGB
-    ------------ ------ ------- ------ -------
-    CHI-P50      OK       71.99  45.98      64</dev:code>
+Computername     Status  PctFree   FreeGB  TotalGB
+------------     ------  -------   ------  -------
+THINKP1          OK        83.66    26.39       32</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
@@ -346,15 +350,19 @@ ComputerName                         : BOVINE320</dev:code>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-MemoryUsage dom1,srv1,srv2,win10 -Status Warning
 
-Computername Status  PctFree FreeGB TotalGB
------------- ------  ------- ------ -------
-WIN10        Warning   36.57   1.17       3</dev:code>
+Computername    Status  PctFree   FreeGB   TotalGB
+------------    ------  -------   ------   -------
+WIN10           Warning   36.57     1.17         3</dev:code>
         <dev:remarks>
           <maml:para>Get usage from several computers but filter and only display those with a Warning.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/2TpnLDV</maml:uri>
+      </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Show-MemoryUsage</maml:linkText>
         <maml:uri></maml:uri>
@@ -379,7 +387,7 @@ WIN10        Warning   36.57   1.17       3</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command will query the Win32_PhysicalMemory class to get hardware details about installed memory.</maml:para>
+      <maml:para>This command will query the Win32_PhysicalMemory class to get hardware details about installed memory. The command writes a custom object to the pipeline.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -460,7 +468,7 @@ WIN10        Warning   36.57   1.17       3</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>physicalMemoryUnit</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -477,28 +485,70 @@ WIN10        Warning   36.57   1.17       3</dev:code>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
         <dev:code>PS C:\&gt; Get-PhysicalMemory
 
+   Computername: PROSPERO
 
-Computername  : BOVINE320
-Manufacturer  : Kingston
-CapacityGB    : 16
-Form          : SODIMM
-ClockSpeed    : 2400
-Voltage       : 1200
-DeviceLocator : ChannelA-DIMM0
-
-Computername  : BOVINE320
-Manufacturer  : Kingston
-CapacityGB    : 16
-Form          : SODIMM
-ClockSpeed    : 2400
-Voltage       : 1200
-DeviceLocator : ChannelB-DIMM0</dev:code>
+Manufacturer CapacityGB Form   ClockSpeed Voltage Location
+------------ ---------- ----   ---------- ------- --------
+Crucial      32         SODIMM 2666       1200    ChannelA-DIMM0
+Crucial      32         SODIMM 2666       1200    ChannelB-DIMM0</dev:code>
         <dev:remarks>
           <maml:para></maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Physicalmemory -Computername thinkp1,prospero
+
+   Computername: THINKP1
+
+Manufacturer CapacityGB Form   ClockSpeed Voltage Location
+------------ ---------- ----   ---------- ------- --------
+Samsung      16         SODIMM 2667       1200    ChannelA-DIMM0
+Micron       16         SODIMM 2667       1200    ChannelB-DIMM0
+
+   Computername: PROSPERO
+
+Manufacturer CapacityGB Form   ClockSpeed Voltage Location
+------------ ---------- ----   ---------- ------- --------
+Crucial      32         SODIMM 2666       1200    ChannelA-DIMM0
+Crucial      32         SODIMM 2666       1200    ChannelB-DIMM0</dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Cimsession | Get-PhysicalMemory
+
+   Computername: WIN10
+
+Manufacturer          CapacityGB Form    ClockSpeed Voltage Location
+------------          ---------- ----    ---------- ------- --------
+Microsoft Corporation 2          Unknown 0          0       M0001
+
+   Computername: SRV1
+
+Manufacturer          CapacityGB Form    ClockSpeed Voltage Location
+------------          ---------- ----    ---------- ------- --------
+Microsoft Corporation 2          Unknown 0          0       M0001
+
+   Computername: DOM1
+
+Manufacturer          CapacityGB Form    ClockSpeed Voltage Location
+------------          ---------- ----    ---------- ------- --------
+Microsoft Corporation 3.875      Unknown 0          0       M0001
+Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
+        <dev:remarks>
+          <maml:para>Pipe existing CIMSessions to the command. This example querying Hyper-V virtual machines so the results are a bit different.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
-    <command:relatedLinks />
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/2HAmHKD</maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
@@ -506,11 +556,11 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
       <command:verb>Get</command:verb>
       <command:noun>TopProcessMemory</command:noun>
       <maml:description>
-        <maml:para>Display processes using the most memory.</maml:para>
+        <maml:para>Display processes using the most memory based on WorkingSet.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command will use Get-CimInstance to retrieve the top processes by Workingset. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.</maml:para>
+      <maml:para>This command will use Get-CimInstance to retrieve the top processes by WorkingSet. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -627,7 +677,7 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>topProcessMemoryUnit</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -642,63 +692,48 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; Get-TopProcessMemory -Computername chi-p50
+        <dev:code>PS C:\&gt; Get-TopProcessMemory -top 1
 
-    Computername : chi-p50
-    ProcessID    : 3128
-    Name         : dns.exe
-    WS(MB)       : 450.78125
-    PctUsed      : 2.28
-    CreationDate : 5/21/2018 10:50:39 AM
-    RunTime      : 17.00:21:09.9646185
-    Commandline  : C:\WINDOWS\system32\dns.exe
-    Owner        : NT AUTHORITY\NETWORK SERVICE
+Computername: PROSPERO
 
-    Computername : chi-p50
-    ProcessID    : 3104
-    Name         : MsMpEng.exe
-    WS(MB)       : 137.33984375
-    PctUsed      : 0.69
-    CreationDate : 5/21/2018 10:50:39 AM
-    RunTime      : 17.00:21:10.0191119
-    Commandline  : 
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7180
-    Name         : ServerManager.exe
-    WS(MB)       : 90.6328125
-    PctUsed      : 0.46
-    CreationDate : 5/21/2018 10:51:07 AM
-    RunTime      : 17.00:20:42.2754743
-    Commandline  : "C:\WINDOWS\system32\ServerManager.exe" 
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7568
-    Name         : Lenovo.Modern.ImController.exe
-    WS(MB)       : 81.3359375
-    PctUsed      : 0.41
-    CreationDate : 5/21/2018 11:03:01 AM
-    RunTime      : 17.00:08:47.9026653
-    Commandline  : "C:\Program Files\Lenovo\ImController\Service\Lenovo.Modern.ImController.exe"
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7980
-    Name         : MicrosoftEdgeCP.exe
-    WS(MB)       : 78.5390625
-    PctUsed      : 0.4
-    CreationDate : 5/22/2018 8:06:35 PM
-    RunTime      : 15.15:05:14.5392500
-    Commandline  : "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\microsoftedgecp.exe" SCODEF:7004 REDAT:140564 /prefetch:2
-    Owner        : NT AUTHORITY\NETWORK SERVICE</dev:code>
+ProcessID   : 3060
+Name        : powershell.exe
+WS(MB)      : 1455.89
+PctUsed     : 4.8277
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Version 5.1 -s -NoLogo -NoProfile</dev:code>
         <dev:remarks>
-          <maml:para>{{ Add example description here }}</maml:para>
+          <maml:para>Get the top process for the local computer.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-Cimsession | Get-TopProcessMemory | Sort Owner | Format-Table -GroupBy Owner -Property ProcessID,Name,WS,PctUsed
+
+   Owner: COMPANY\ArtD
+
+Computername ProcessID Name                  WS PctUsed
+------------ --------- ----                  -- -------
+WIN10             3520 powershell.exe 153464832 14.2925
+
+   Owner: NT AUTHORITY\SYSTEM
+
+Computername ProcessID Name               WS PctUsed
+------------ --------- ----               -- -------
+WIN10             2396 MsMpEng.exe 164093952 15.2824
+WIN10             1400 svchost.exe  65187840  6.0711
+WIN10              984 LogonUI.exe  55332864  5.1533
+WIN10             1056 svchost.exe  47890432  4.4601</dev:code>
+        <dev:remarks>
+          <maml:para>Use an existing CIMSession and get the top 5 processes. The output is sorted by the Owner property and formatted as a table.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/34y1oCF</maml:uri>
+      </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-MemoryUsage</maml:linkText>
         <maml:uri></maml:uri>
@@ -719,7 +754,7 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This is a variation of the Get-MemoryUsage command. This version writes to the console using Write-Host and colorizes the output. Normal values will be displayed in green. Warnings will be displayed in yellow and Critical systems in red.</maml:para>
+      <maml:para>This is a variation of the Get-MemoryUsage command. This version displays a colorized and formatted table using a custom view. Normal values will be displayed in green. Warnings will be displayed in yellow and Critical systems in red. The criteria for what is normal or not is based on the $MemoryToolsOK and $MemoryToolsWarning global variable values. You can modify these values from the console.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -800,7 +835,7 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
     <command:returnValues>
       <command:returnValue>
         <dev:type>
-          <maml:name>None. This command writes to the console.</maml:name>
+          <maml:name>This command creates a formatted table</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -815,24 +850,28 @@ DeviceLocator : ChannelB-DIMM0</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS S:\MemoryTools&gt; show-memoryusage -Computername Dom1,Srv1,Srv2,Win10
+        <dev:code>PS C:\&gt; show-memoryusage -Computername Dom1,Srv1,Srv2,Win10
 
 ****************
-* Memory Check *
+  Memory Check
 ****************
 
-Computername Status  PctFree  FreeGB TotalGB
------------- ------  -------  ------ -------
-DOM1         OK        99.92  1023.2    1024
-SRV1         OK        99.96 1023.63    1024
-SRV2         OK        99.95 1023.51    1024
-WIN10        Warning   36.89    1.19       3</dev:code>
+Computername     Status    PctFree   FreeGB  TotalGB
+------------     ------    -------   ------  -------
+DOM1             OK          99.92   1023.2     1024
+SRV1             OK          99.96  1023.63     1024
+SRV2             OK          99.95  1023.51     1024
+WIN10            Warning     36.89     1.19        3</dev:code>
         <dev:remarks>
           <maml:para>The line for Win10 would be displayed in Yellow. The other computers would be displayed in Green.</maml:para>
         </dev:remarks>
       </command:example>
     </command:examples>
     <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/2Tp7IWy</maml:uri>
+      </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-MemoryUsage</maml:linkText>
         <maml:uri></maml:uri>
@@ -845,11 +884,11 @@ WIN10        Warning   36.89    1.19       3</dev:code>
       <command:verb>Test</command:verb>
       <command:noun>MemoryUsage</command:noun>
       <maml:description>
-        <maml:para>Test if a computer meets a specific memory threshhold.</maml:para>
+        <maml:para>Test if a computer meets a specific memory threshold.</maml:para>
       </maml:description>
     </command:details>
     <maml:description>
-      <maml:para>This command can be used to test if memory utilization meets some criteria. There are several parameter sets for the different tests. All of them can be used with -Quiet to return a simple Boolean value.</maml:para>
+      <maml:para>This command can be used to test if memory utilization meets some criteria. There are several parameter sets for different tests. All of them can be used with -Quiet to return a simple Boolean value.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -1271,18 +1310,18 @@ WIN10        Warning   36.89    1.19       3</dev:code>
     <command:examples>
       <command:example>
         <maml:title>-------------------------- Example 1 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; test-memoryusage
+        <dev:code>PS C:\&gt; Test-MemoryUsage
 
 Computername PctFree Test
 ------------ ------- ----
 BOVINE320      50.53 True</dev:code>
         <dev:remarks>
-          <maml:para>Run the default test on the local computer. The default percentage threshhold is 50%.</maml:para>
+          <maml:para>Run the default test on the local computer. The default percentage threshold is 50%.</maml:para>
         </dev:remarks>
       </command:example>
       <command:example>
         <maml:title>-------------------------- Example 2 --------------------------</maml:title>
-        <dev:code>PS C:\&gt; test-memoryusage -FreeGB 16
+        <dev:code>PS C:\&gt; Test-MemoryUsage -FreeGB 16
 
 Computername FreeGB  Test
 ------------ ------  ----
@@ -1312,6 +1351,10 @@ BOVINE320     15.74 False</dev:code>
       </command:example>
     </command:examples>
     <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Online Version:</maml:linkText>
+        <maml:uri>https://bit.ly/2TFkXml</maml:uri>
+      </maml:navigationLink>
       <maml:navigationLink>
         <maml:linkText>Get-MemoryUsage</maml:linkText>
         <maml:uri></maml:uri>

@@ -1,7 +1,7 @@
 ---
 external help file: MemoryTools-help.xml
 Module Name: MemoryTools
-online version:
+online version: https://bit.ly/34y1oCF
 schema: 2.0.0
 ---
 
@@ -9,23 +9,17 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Display processes using the most memory.
+Display processes using the most memory based on WorkingSet.
 
 ## SYNTAX
 
-### ComputerNameSet (Default)
-
-```yaml
-Get-TopProcessMemory [-Top <Int32>] [<CommonParameters>]
-```
-
-### ComputernameSet
+### ComputerName (Default)
 
 ```yaml
 Get-TopProcessMemory [[-Computername] <String[]>] [-Top <Int32>] [<CommonParameters>]
 ```
 
-### CimInstanceSessionSet
+### Cim
 
 ```yaml
 Get-TopProcessMemory -CimSession <CimSession[]> [-Top <Int32>] [<CommonParameters>]
@@ -33,67 +27,49 @@ Get-TopProcessMemory -CimSession <CimSession[]> [-Top <Int32>] [<CommonParameter
 
 ## DESCRIPTION
 
-This command will use Get-CimInstance to retrieve the top processes by Workingset. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
+This command will use Get-CimInstance to retrieve the top processes by WorkingSet. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
 
 ## EXAMPLES
 
 ### Example 1
 
 ```powershell
-PS C:\> Get-TopProcessMemory -Computername chi-p50
+PS C:\> Get-TopProcessMemory -top 1
 
-    Computername : chi-p50
-    ProcessID    : 3128
-    Name         : dns.exe
-    WS(MB)       : 450.78125
-    PctUsed      : 2.28
-    CreationDate : 5/21/2018 10:50:39 AM
-    RunTime      : 17.00:21:09.9646185
-    Commandline  : C:\WINDOWS\system32\dns.exe
-    Owner        : NT AUTHORITY\NETWORK SERVICE
+Computername: PROSPERO
 
-    Computername : chi-p50
-    ProcessID    : 3104
-    Name         : MsMpEng.exe
-    WS(MB)       : 137.33984375
-    PctUsed      : 0.69
-    CreationDate : 5/21/2018 10:50:39 AM
-    RunTime      : 17.00:21:10.0191119
-    Commandline  : 
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7180
-    Name         : ServerManager.exe
-    WS(MB)       : 90.6328125
-    PctUsed      : 0.46
-    CreationDate : 5/21/2018 10:51:07 AM
-    RunTime      : 17.00:20:42.2754743
-    Commandline  : "C:\WINDOWS\system32\ServerManager.exe" 
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7568
-    Name         : Lenovo.Modern.ImController.exe
-    WS(MB)       : 81.3359375
-    PctUsed      : 0.41
-    CreationDate : 5/21/2018 11:03:01 AM
-    RunTime      : 17.00:08:47.9026653
-    Commandline  : "C:\Program Files\Lenovo\ImController\Service\Lenovo.Modern.ImController.exe"
-    Owner        : NT AUTHORITY\NETWORK SERVICE
-
-    Computername : chi-p50
-    ProcessID    : 7980
-    Name         : MicrosoftEdgeCP.exe
-    WS(MB)       : 78.5390625
-    PctUsed      : 0.4
-    CreationDate : 5/22/2018 8:06:35 PM
-    RunTime      : 15.15:05:14.5392500
-    Commandline  : "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\microsoftedgecp.exe" SCODEF:7004 REDAT:140564 /prefetch:2
-    Owner        : NT AUTHORITY\NETWORK SERVICE
+ProcessID   : 3060
+Name        : powershell.exe
+WS(MB)      : 1455.89
+PctUsed     : 4.8277
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Version 5.1 -s -NoLogo -NoProfile
 ```
 
-{{ Add example description here }}
+Get the top process for the local computer.
+
+### Example 2
+
+```powershell
+PS C:\> Get-Cimsession | Get-TopProcessMemory | Sort Owner | Format-Table -GroupBy Owner -Property ProcessID,Name,WS,PctUsed
+
+   Owner: COMPANY\ArtD
+
+Computername ProcessID Name                  WS PctUsed
+------------ --------- ----                  -- -------
+WIN10             3520 powershell.exe 153464832 14.2925
+
+   Owner: NT AUTHORITY\SYSTEM
+
+Computername ProcessID Name               WS PctUsed
+------------ --------- ----               -- -------
+WIN10             2396 MsMpEng.exe 164093952 15.2824
+WIN10             1400 svchost.exe  65187840  6.0711
+WIN10              984 LogonUI.exe  55332864  5.1533
+WIN10             1056 svchost.exe  47890432  4.4601
+```
+
+Use an existing CIMSession and get the top 5 processes. The output is sorted by the Owner property and formatted as a table.
 
 ## PARAMETERS
 
@@ -158,7 +134,7 @@ For more information, see about_CommonParameters (http://go.microsoft.com/fwlink
 
 ## OUTPUTS
 
-### System.Object
+### topProcessMemoryUnit
 
 ## NOTES
 
@@ -166,6 +142,6 @@ Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell
 
 ## RELATED LINKS
 
-[Get-MemoryUsage](./Get-MemoryUsage.md)
+[Get-MemoryUsage](Get-MemoryUsage.md)
 
-[Show-MemoryUsage](/Show-MemoryUsage.md)
+[Show-MemoryUsage](Show-MemoryUsage.md)

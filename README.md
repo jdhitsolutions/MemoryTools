@@ -2,12 +2,14 @@
 
 [![PSGallery Version](https://img.shields.io/powershellgallery/v/MemoryTools.png?style=for-the-badge&logo=powershell&label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/MemoryTools/) [![PSGallery Downloads](https://img.shields.io/powershellgallery/dt/MemoryTools.png?style=for-the-badge&label=Downloads)](https://www.powershellgallery.com/packages/MemoryTools/)
 
-This module contains a set of PowerShell functions for reporting on computer memory utilization and configuration. The commands use `Get-CimInstance` so remote computers must be running PowerShell 3.0 or later. The project was first described on my [blog](http://bit.ly/1Tooj3Q).
+This module contains a set of PowerShell functions for reporting on computer memory utilization and configuration. The commands use `Get-CimInstance`, so PowerShell 3.0 or later must be installed on remote computers, and they need to be configured for PowerShell remoting.
 
-Install the latest version of this module from the PowerShell Gallery.
+The project was first described on my [blog](http://bit.ly/1Tooj3Q).
+
+Install the latest version of this module from the PowerShell Gallery. It should work in Windows PowerShell 5.1 and PowerShell 7 on a Windows platform.
 
 ```powershell
-Install-Module MemoryTools [-scope currentuser]
+Install-Module MemoryTools [-scope CurrentUser]
 ```
 
 ## [Get-MemoryUsage](docs/Get-MemoryUsage.md)
@@ -30,11 +32,11 @@ This command will also get the same information as Get-MemoryUsage but will disp
 
 ## [Test-MemoryUsage](docs/Test-MemoryUsage.md)
 
-This command can be used to test if memory utilization meets some criteria. There are several parameter sets for different tests. All of them can be used with -Quiet to return a simple Boolean value.
+This command can be used to test if memory utilization meets some criteria. There are several parameter sets for different tests. All of them can be used with `-Quiet` to return a simple Boolean value.
 
 ### Percent Free
 
-The default behavior is to see is there is at least 50% free memory, but you can specify a different value.
+The default behavior is to see if there is at least 50% free memory, but you can specify a different value.
 
 ```powershell
 PS C:\> Test-MemoryUsage
@@ -162,66 +164,81 @@ Micron       16         SODIMM 2667       1200    ChannelB-DIMM0
 
 ## [Get-TopProcessMemory](docs/Get-TopProcessMemory.md)
 
-This command will use `Get-CimInstance` to retrieve the top processes by *Workingset*. It will retrieve the top 5 by default. The output will include a percentage of total in-use memory the process is using as well as the process owner.
+This command will use `Get-CimInstance` to retrieve the top processes by *Workingset*. It will retrieve the top 5 by default. The output will include a percentage of the total memory in use and the process owner.
 
 ```powershell
 PS C:\> Get-TopProcessMemory
 
-Computername : PROSPERO
-ProcessID    : 20612
-Name         : firefox.exe
-WS(MB)       : 1548.55859375
-PctUsed      : 8.83
-CreationDate : 10/26/2020 1:59:02 PM
-RunTime      : 03:23:47.8689917
-Commandline  : "C:\Program Files\Mozilla Firefox\firefox.exe" -contentproc
-               --channel="19336.20.1545159411\236482607" -childID 3
-               -isForBrowser -prefsHandle 5180 -prefMapHandle 5160 -prefsLen
-               7680 -prefMapSize 245875 -parentBuildID 20201014125134 -appdir
-               "C:\Program Files\Mozilla Firefox\browser" - 19336
-               "\\.\pipe\gecko-crash-server-pipe.19336" 5176 tab
-Owner        : NT AUTHORITY\NETWORK SERVICE
+   Computername: PROSPERO
 
-Computername : PROSPERO
-ProcessID    : 5204
-Name         : sqlservr.exe
-WS(MB)       : 738.671875
-PctUsed      : 4.21
-CreationDate : 10/26/2020 1:56:58 PM
-RunTime      : 03:25:52.2052364
-Commandline  : "C:\Program Files\Microsoft SQL
-               Server\MSSQL15.SQLEXPRESS\MSSQL\Binn\sqlservr.exe" -sSQLEXPRESS
-Owner        : NT AUTHORITY\NETWORK SERVICE
+ProcessID   : 4280
+Name        : Memory Compression
+WS(MB)      : 1306.37
+PctUsed     : 4.9505
+Owner       : NT AUTHORITY\SYSTEM
+Commandline :
 
-Computername : PROSPERO
-ProcessID    : 19336
-Name         : firefox.exe
-WS(MB)       : 507.62890625
-PctUsed      : 2.89
-CreationDate : 10/26/2020 1:59:00 PM
-RunTime      : 03:23:49.7282834
-Commandline  : "C:\Program Files\Mozilla Firefox\firefox.exe"
-Owner        : NT AUTHORITY\NETWORK SERVICE
+ProcessID   : 40800
+Name        : pwsh.exe
+WS(MB)      : 1250.1
+PctUsed     : 4.7373
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Program Files\PowerShell\7\pwsh.exe" -nologo
 
-Computername : PROSPERO
-ProcessID    : 5412
-Name         : Snagit32.exe
-WS(MB)       : 444.515625
-PctUsed      : 2.53
-CreationDate : 10/26/2020 1:57:47 PM
-RunTime      : 03:25:02.8728620
-Commandline  : "C:\Program Files\TechSmith\Snagit 2020\Snagit32.exe" /i
-Owner        : NT AUTHORITY\NETWORK SERVICE
+ProcessID   : 43612
+Name        : pwsh.exe
+WS(MB)      : 534.37
+PctUsed     : 2.025
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Program Files\PowerShell\7\pwsh.exe" -NoProfile
+              -ExecutionPolicy Bypass -Command "Import-Module 'c:\Users\Jeff\.vs
+              code\extensions\ms-vscode.powershell-2023.2.1\modules\PowerShellEd
+              itorServices\PowerShellEditorServices.psd1'; Start-EditorServices
+              -HostName 'Visual Studio Code Host' -HostProfileId
+              'Microsoft.VSCode' -HostVersion '2023.2.1' -AdditionalModules
+              @('PowerShellEditorServices.VSCode') -BundledModulesPath 'c:\Users
+              \Jeff\.vscode\extensions\ms-vscode.powershell-2023.2.1\modules'
+              -EnableConsoleRepl -StartupBanner '' -LogLevel 'Normal' -LogPath '
+              c:\Users\Jeff\AppData\Roaming\Code\User\globalStorage\ms-vscode.po
+              wershell\logs\1679663113-13d77409-f0b9-4af6-87e8-58d6de36834f16796
+              62816963\EditorServices.log' -SessionDetailsPath 'c:\Users\Jeff\Ap
+              pData\Roaming\Code\User\globalStorage\ms-vscode.powershell\session
+              s\PSES-VSCode-29600-898846.json' -FeatureFlags @() "
 
-Computername : PROSPERO
-ProcessID    : 12556
-Name         : thunderbird.exe
-WS(MB)       : 436.14453125
-PctUsed      : 2.49
-CreationDate : 10/26/2020 4:02:00 PM
-RunTime      : 01:20:50.0968368
-Commandline  : "C:\Program Files\Mozilla Thunderbird\thunderbird.exe"
-Owner        : NT AUTHORITY\NETWORK SERVICE
+ProcessID   : 13480
+Name        : PhoneExperienceHost.exe
+WS(MB)      : 431.92
+PctUsed     : 1.6368
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Program Files\WindowsApps\Microsoft.YourPhone_1.23022.139.0_x6
+              4__8wekyb3d8bbwe\PhoneExperienceHost.exe"
+              -Restart:{F534506B-042E-4975-BF2C-806D54F0EBC7}
+
+ProcessID   : 31184
+Name        : firefox.exe
+WS(MB)      : 349.93
+PctUsed     : 1.3261
+Owner       : PROSPERO\Jeff
+Commandline : "C:\Program Files\Mozilla Firefox\firefox.exe" -osint -url
+              https://pester.dev/docs/commands/Should
 ```
 
-Last updated _2020-11-11 23:00:59Z_
+## [Get-ProcessMemory](docs/Get-ProcessMemory.md)
+
+Get a snapshot of a process' memory usage based on its workingset value. Processes are grouped by name.
+
+```powershell
+PS C:\> Get-ProcessMemory | Select-Object -first 5
+
+Name                   Count Threads      AvgMB      SumMB     Computername
+----                   ----- -------      -----      -----     ------------
+firefox                   17     467   142.2585  2418.3945         PROSPERO
+pwsh                       3     101   642.0807  1926.2422         PROSPERO
+svchost                  102     692    16.0955  1641.7461         PROSPERO
+Code                      13     264    117.466  1527.0586         PROSPERO
+Memory Compression         1      54  1306.3555  1306.3555         PROSPERO
+```
+
+## Roadmap
+
+I have plans to revise commands to take advantage of SSH remoting in PowerShell 7. It also might be nice to have a WPF-based GUI to display memory information.

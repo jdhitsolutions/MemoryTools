@@ -1,8 +1,5 @@
-
-
 #import module variables and aliases
-. $PSScriptRoot\functions\public.ps1
-
+(Get-Childitem -Path $PSScriptRoot\functions\*.ps1).Foreach({. $_.FullName})
 
 #global settings for MemoryTools commands
 
@@ -19,7 +16,5 @@ Or modify the file for permanent changes. You will need to
 re-import the module for the changes to take effect.
 #>
 
-
 [ValidateRange(1, 100)][int32]$Global:MemoryToolsOK = 45
 [ValidateRange(1, 100)][int32]$Global:MemoryToolsWarning = 15
-

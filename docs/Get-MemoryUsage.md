@@ -53,6 +53,14 @@ WIN10           Warning   36.57     1.17         3
 
 Get usage from several computers but filter and only display those with a Warning.
 
+### Example 3
+
+```powershell
+PS C:\> Get-MemoryUsage dom1,srv1,srv2,win10 | Format-Table -view show
+```
+
+Display a similar table as the previous example, but highlight using ANSI escape sequences.
+
 ## PARAMETERS
 
 ### -CimSession

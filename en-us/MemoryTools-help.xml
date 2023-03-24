@@ -17,9 +17,9 @@
         <maml:name>Get-MemoryPerformance</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to a CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -32,9 +32,9 @@
         <maml:name>Get-MemoryPerformance</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the name of a computer to connect to.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -47,9 +47,9 @@
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect to a CimSession.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -59,9 +59,9 @@
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the name of a computer to connect to.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -200,9 +200,9 @@ ComputerName                         : WIN10Desktop</dev:code>
         <maml:name>Get-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect using an existing CIMSession</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -212,9 +212,9 @@ ComputerName                         : WIN10Desktop</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Status</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Filter on a given status.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">OK</command:parameterValue>
@@ -233,9 +233,9 @@ ComputerName                         : WIN10Desktop</dev:code>
         <maml:name>Get-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specify the name of the computer or computers to query.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -245,9 +245,9 @@ ComputerName                         : WIN10Desktop</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Status</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Filter on a given status.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValueGroup>
             <command:parameterValue required="false" command:variableLength="false">All</command:parameterValue>
             <command:parameterValue required="false" command:variableLength="false">OK</command:parameterValue>
@@ -266,9 +266,9 @@ ComputerName                         : WIN10Desktop</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect using an existing CIMSession</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -278,9 +278,9 @@ ComputerName                         : WIN10Desktop</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specify the name of the computer or computers to query.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -290,9 +290,9 @@ ComputerName                         : WIN10Desktop</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Status</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Filter on a given status.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
         <dev:type>
           <maml:name>String</maml:name>
@@ -357,6 +357,13 @@ WIN10           Warning   36.57     1.17         3</dev:code>
           <maml:para>Get usage from several computers but filter and only display those with a Warning.</maml:para>
         </dev:remarks>
       </command:example>
+      <command:example>
+        <maml:title>-------------------------- Example 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-MemoryUsage dom1,srv1,srv2,win10 | Format-Table -view show</dev:code>
+        <dev:remarks>
+          <maml:para>Display a similar table as the previous example, but highlight using ANSI escape sequences.</maml:para>
+        </dev:remarks>
+      </command:example>
     </command:examples>
     <command:relatedLinks>
       <maml:navigationLink>
@@ -394,9 +401,9 @@ WIN10           Warning   36.57     1.17         3</dev:code>
         <maml:name>Get-PhysicalMemory</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect via an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -409,9 +416,9 @@ WIN10           Warning   36.57     1.17         3</dev:code>
         <maml:name>Get-PhysicalMemory</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Specify the name of a computer or computers to query.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -424,9 +431,9 @@ WIN10           Warning   36.57     1.17         3</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect via an existing CimSession.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -436,9 +443,9 @@ WIN10           Warning   36.57     1.17         3</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Specify the name of a computer or computers to query.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -552,6 +559,238 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
+      <command:name>Get-ProcessMemory</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>ProcessMemory</command:noun>
+      <maml:description>
+        <maml:para>Get a snapshot of a process' memory usage.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>Get a snapshot of a process' memory usage based on its workingset value. You can get the same information using Get-Process or by querying the Win32_Process WMI class with Get-CimInstance. This command uses Invoke-Command to gather the information remotely. Many of the parameters are from that cmdlet.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-ProcessMemory</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+          <maml:name>Name</maml:name>
+          <maml:description>
+            <maml:para>The process name.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>*</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Computername</maml:name>
+          <maml:description>
+            <maml:para>The name of a remote computer.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>$env:COMPUTERNAME</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Credential</maml:name>
+          <maml:description>
+            <maml:para>A credential for the remote computer.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
+          <dev:type>
+            <maml:name>PSCredential</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>ThrottleLimit</maml:name>
+          <maml:description>
+            <maml:para></maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>0</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+          <maml:name>Authentication</maml:name>
+          <maml:description>
+            <maml:para></maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+          <dev:type>
+            <maml:name>String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Default</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="1" aliases="none">
+        <maml:name>Name</maml:name>
+        <maml:description>
+          <maml:para>The process name.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>*</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Computername</maml:name>
+        <maml:description>
+          <maml:para>The name of a remote computer.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>$env:COMPUTERNAME</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Credential</maml:name>
+        <maml:description>
+          <maml:para>A credential for the remote computer.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">PSCredential</command:parameterValue>
+        <dev:type>
+          <maml:name>PSCredential</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>ThrottleLimit</maml:name>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>0</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
+        <maml:name>Authentication</maml:name>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
+        <dev:type>
+          <maml:name>String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Default</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>[string[]]</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>myProcessMemory</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para></maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>Learn more about PowerShell: http://jdhitsolutions.com/blog/essential-powershell-resources/</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 1 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-ProcessMemory code,powershell*
+
+Name                   Count Threads      AvgMB      SumMB      Computername
+----                   ----- -------      -----      -----      ------------
+Code                       9     154   112.8199  1015.3789         BOVINE320
+powershell                 3      77   179.1367   537.4102         BOVINE320
+powershell_ise             1      21   242.0586   242.0586         BOVINE320</dev:code>
+        <dev:remarks>
+          <maml:para>The default output displays the process name, the total process count, the total number of threads, the average workingset value per process in MB and the total workingset size of all processes also formatted in MB.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 2 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-ProcessMemory -computername srv1,srv2,dom1 -Name lsass -cred company\artd
+
+Name                   Count Threads      AvgMB      SumMB     Computername
+----                   ----- -------      -----      -----     ------------
+lsass                      1      30    60.1719    60.1719             DOM1
+lsass                      1       7    10.8594    10.8594             SRV1
+lsass                      1       7     9.6953     9.6953             SRV2</dev:code>
+        <dev:remarks>
+          <maml:para></maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-ProcessMemory *ActiveDirectory* -Computername dom1 | Select-Object *
+
+Name         : Microsoft.ActiveDirectory.WebServices
+Count        : 1
+Threads      : 10
+Average      : 46940160
+Sum          : 46940160
+Computername : DOM1</dev:code>
+        <dev:remarks>
+          <maml:para>This example uses a wildcard for the process name because the domain controller only has one related process. The output shows the raw values.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
+        <dev:code>PS C:\&gt; Get-ProcessMemory *edge*,firefox,chrome | sort sum -Descending
+
+Name                   Count Threads      AvgMB      SumMB     Computername
+----                   ----- -------      -----      -----     ------------
+firefox                    6     189   180.4134  1082.4805        BOVINE320
+chrome                     8     124    67.1377   537.1016        BOVINE320
+MicrosoftEdgeCP            4     171    66.1846   264.7383        BOVINE320
+MicrosoftEdge              1      37    70.1367    70.1367        BOVINE320
+MicrosoftEdgeSH            1      10     8.2734     8.2734        BOVINE320</dev:code>
+        <dev:remarks>
+          <maml:para>Get browser processes and sort on the underlying SUM property in descending order.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>Get-Process</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-TopProcessMemory</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
       <command:name>Get-TopProcessMemory</command:name>
       <command:verb>Get</command:verb>
       <command:noun>TopProcessMemory</command:noun>
@@ -567,9 +806,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
         <maml:name>Get-TopProcessMemory</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect via an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -579,9 +818,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Top</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>The number of processes to retrieve. There is a maximum value of 25.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -594,9 +833,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
         <maml:name>Get-TopProcessMemory</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>The name of a computer or computers to query.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -606,9 +845,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Top</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>The number of processes to retrieve. There is a maximum value of 25.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -621,9 +860,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect via an existing CimSession.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -633,9 +872,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>The name of a computer or computers to query.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -645,9 +884,9 @@ Microsoft Corporation 4.125      Unknown 0          0       M0002</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Top</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>The number of processes to retrieve. There is a maximum value of 25.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -761,9 +1000,9 @@ WIN10             1056 svchost.exe  47890432  4.4601</dev:code>
         <maml:name>Show-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -776,9 +1015,9 @@ WIN10             1056 svchost.exe  47890432  4.4601</dev:code>
         <maml:name>Show-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>The name of a computer or computers to query.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -791,9 +1030,9 @@ WIN10             1056 svchost.exe  47890432  4.4601</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByValue)" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect to an existing CimSession.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -803,9 +1042,9 @@ WIN10             1056 svchost.exe  47890432  4.4601</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>The name of a computer or computers to query.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -895,9 +1134,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -907,9 +1146,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -918,9 +1157,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>UsedGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum amount of used memory in GB</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
           <dev:type>
             <maml:name>Double</maml:name>
@@ -933,9 +1172,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -945,9 +1184,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -956,9 +1195,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>TotalGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum total memory in GB</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -971,9 +1210,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -983,9 +1222,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>FreeGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum free memory in GB.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
           <dev:type>
             <maml:name>Double</maml:name>
@@ -995,9 +1234,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1009,9 +1248,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>CimSession</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Connect to an existing CimSession.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
           <dev:type>
             <maml:name>CimSession[]</maml:name>
@@ -1021,9 +1260,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PercentFree</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum % free memory</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -1033,9 +1272,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1047,9 +1286,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the name of a computer or computers to test.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -1059,9 +1298,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>PercentFree</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum % free memory</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -1071,9 +1310,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1085,9 +1324,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the name of a computer or computers to test.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -1097,9 +1336,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1108,9 +1347,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>UsedGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum amount of used memory in GB</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
           <dev:type>
             <maml:name>Double</maml:name>
@@ -1123,9 +1362,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the name of a computer or computers to test.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -1135,9 +1374,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1146,9 +1385,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>TotalGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum total memory in GB</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
           <dev:type>
             <maml:name>Int32</maml:name>
@@ -1161,9 +1400,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         <maml:name>Test-MemoryUsage</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
           <maml:name>Computername</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the name of a computer or computers to test.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
           <dev:type>
             <maml:name>String[]</maml:name>
@@ -1173,9 +1412,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>FreeGB</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Enter the minimum free memory in GB.</maml:para>
-          </maml:Description>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
           <dev:type>
             <maml:name>Double</maml:name>
@@ -1185,9 +1424,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
           <maml:name>Quiet</maml:name>
-          <maml:Description>
+          <maml:description>
             <maml:para>Suppress details and return a Boolean value.</maml:para>
-          </maml:Description>
+          </maml:description>
           <dev:type>
             <maml:name>SwitchParameter</maml:name>
             <maml:uri />
@@ -1199,9 +1438,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
     <command:parameters>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>CimSession</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Connect to an existing CimSession.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">CimSession[]</command:parameterValue>
         <dev:type>
           <maml:name>CimSession[]</maml:name>
@@ -1211,9 +1450,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName, ByValue)" position="0" aliases="cn">
         <maml:name>Computername</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the name of a computer or computers to test.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">String[]</command:parameterValue>
         <dev:type>
           <maml:name>String[]</maml:name>
@@ -1223,9 +1462,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>FreeGB</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the minimum free memory in GB.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
         <dev:type>
           <maml:name>Double</maml:name>
@@ -1235,9 +1474,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>PercentFree</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the minimum % free memory</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -1247,9 +1486,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>Quiet</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Suppress details and return a Boolean value.</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
         <dev:type>
           <maml:name>SwitchParameter</maml:name>
@@ -1259,9 +1498,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>TotalGB</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the minimum total memory in GB</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Int32</command:parameterValue>
         <dev:type>
           <maml:name>Int32</maml:name>
@@ -1271,9 +1510,9 @@ WIN10            Warning     36.89     1.19        3</dev:code>
       </command:parameter>
       <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="none">
         <maml:name>UsedGB</maml:name>
-        <maml:Description>
+        <maml:description>
           <maml:para>Enter the minimum amount of used memory in GB</maml:para>
-        </maml:Description>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">Double</command:parameterValue>
         <dev:type>
           <maml:name>Double</maml:name>
